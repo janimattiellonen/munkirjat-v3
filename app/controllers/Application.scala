@@ -33,10 +33,16 @@ object Application extends Controller {
 		    suppliers += (150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966")
 		}
 		*/
-	    
-	    
-	    
+
 		Ok(views.html.index(""))
+	}
+	
+	def home = Action {
+	    Ok(views.html.home(""))
+	}
+	
+	def about = Action {
+	    Ok(views.html.about(""))
 	}
 
 }

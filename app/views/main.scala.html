@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html ng-app="app" lang="en">
     <head>
         <title>@title</title>
         <meta charset="utf-8">
@@ -12,7 +12,6 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("core/javascripts/bootstrap/css/bootstrap.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("core/images/favicon.png")">
-        <script src="@routes.Assets.at("core/javascripts/hello.js")" type="text/javascript"></script>
     </head>
     <body>
     @title
@@ -20,11 +19,8 @@
 			@views.html.menu()
 		</div>
 		
-		<div class="container">
-      		<div class="starter-template">
-        		<h1>Bootstrap starter template</h1>
-        		<p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      		</div>
+		<div class="container" ui-view>
+      		@content
     	</div>
         
         <script src="@routes.Assets.at("core/javascripts/jquery/jquery.min.js")" type="text/javascript"></script>
@@ -33,5 +29,8 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-resource.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.11/angular-ui-router.js" type="text/javascript"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+        <script type="text/javascript" src="@routes.Assets.at("core/javascripts/munkirjat/app.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("core/javascripts/munkirjat/controllers/AboutController.js")"></script>
+        
     </body>
 </html>
