@@ -8,7 +8,7 @@
         <meta charset="utf-8">
     	<meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+        <link media="screen" rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("core/javascripts/bootstrap/css/bootstrap.min.css")">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("core/images/favicon.png")">
@@ -19,9 +19,18 @@
 			@views.html.menu()
 		</div>
 		
-		<div id="main-container" class="container" ui-view>
-      		@content
+		<header>
+		</header>
+		
+		<div id="main-container" class="container">
+			<div id="page" ui-view>
+      			@content
+      		</div>
+      		
+      		<footer><p>&copy; Janimatti Ellonen</p></footer>
     	</div>
+        
+        
         
         <script src="@routes.Assets.at("core/javascripts/jquery/jquery.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("core/javascripts/bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
@@ -31,6 +40,5 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
         <script type="text/javascript" src="@routes.Assets.at("core/javascripts/munkirjat/app.js")"></script>
         <script type="text/javascript" src="@routes.Assets.at("core/javascripts/munkirjat/controllers/AboutController.js")"></script>
-        
     </body>
 </html>
