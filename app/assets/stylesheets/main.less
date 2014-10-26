@@ -1,3 +1,5 @@
+@radius: 10px;
+
 * {
     margin: 0;
 }
@@ -19,6 +21,7 @@ body {
 	background-attachment: fixed;
 	background-position: center 0px;
 	background-repeat: no-repeat;
+	min-width: 630px;
 	
 	header {
 		img#header-image {
@@ -32,7 +35,7 @@ body {
     div#main-container {
 
 		background: #f6f6f6;
-		opacity: 0.9;
+		opacity: 1;
 	    width: 70%;
 	    max-width: 1200px;
 	
@@ -81,7 +84,13 @@ body {
 	float: left;
 	padding: 15px;
 	display: inline-block;
-	width: 50%;
+	width: 40%;
+	background: #f0f0f0; /* #eaeaea */
+	box-shadow: 2px 2px 1px #c4c4c4;
+	border-radius: 0 @radius @radius 0;
+	border-left: 3px solid #901212;
+	margin: 20px;
+	height: 200px;
 	
 	h2 {
 		margin-top: 0;
@@ -91,6 +100,32 @@ body {
 		font-size: 1em;
 	}
 	
+}
+
+
+.h125 {
+	height: 125px;
+}
+
+
+.h280 {
+	height: 280px;
+}
+
+.rc_tl {
+	border-radius: @radius 0 0 0;
+}
+
+.rc_tr {
+	border-radius: 0 @radius 0 0;
+}
+
+.rc_br {
+	border-radius: 0 0 @radius 0;
+}
+
+.rc_bl {
+	border-radius: 0 0 0 @radius;
 }
 
 .stats-main {
@@ -124,7 +159,11 @@ body {
 @media screen and (max-width: 997px) {
 
     .box {
-    	width: 90%;
+    	width: 80%;
     	clear: both;
+    }
+    
+ 	.rc_tl, .rc_tr, .rc_br, .rc_bl {
+    	border-radius: 0;
     }
 }
