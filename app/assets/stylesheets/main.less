@@ -6,6 +6,10 @@ html, body {
     height: 100%;
 }
 
+h2 {
+	font-size: 1.5em;
+}
+
 h1, h2, h3, h4 {
 	color: #901212;
 }
@@ -52,8 +56,12 @@ body {
     
     }
     
+   	div#main-container:after {
+	  	content: "";
+	  	display: block;
+	}
+    
     footer {
-	    float: left;
 	    height: 50px;
 	    background: black;
 	    width: 100%;
@@ -70,10 +78,10 @@ body {
 }
 
 .box {
-
-	margin-left: 20px;
+	float: left;
 	padding: 15px;
 	display: inline-block;
+	width: 50%;
 	
 	h2 {
 		margin-top: 0;
@@ -88,12 +96,35 @@ body {
 .stats-main {
 	float: left;
 	width: 70%;
+	
+	.row {
+		width: 100%;
+		float: left;
+		background: blue;
+		margin-bottom: 20px;
+	}
 }
 
 .stats {
-	float:right;
+	float: left;
 	width: 30%;
+	
 	h3 {
 		font-size: 1em;
 	}
+}
+
+.clear {
+	clear: both;
+	content: ".";
+	display: hidden;
+}
+
+
+@media screen and (max-width: 1075px) {
+
+    .box {
+    	width: 90%;
+    	clear: both;
+    }
 }
