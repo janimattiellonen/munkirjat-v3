@@ -1,0 +1,4 @@
+// table models generator	   
+scala.slick.codegen.SourceCodeGenerator.main(
+	Array("scala.slick.driver.MySQLDriver", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/munkirjat_scala?user=root&password=&characterEncoding=UTF-8", "models", "model", "root", "")
+)

@@ -10,6 +10,8 @@ object Application extends Controller {
 	def index = Action {
 	    
 	    
+	    
+	    
 	    val driver = Play.current.configuration.getString("db.default.driver").getOrElse("")
 	    val url = Play.current.configuration.getString("db.default.url").getOrElse("")
 	    val db = Database.forURL(url, driver = "com.mysql.jdbc.Driver")
@@ -38,6 +40,11 @@ object Application extends Controller {
 	}
 	
 	def home = Action {
+	   /*
+	    scala.slick.codegen.SourceCodeGenerator.main(
+	    	Array("scala.slick.driver.MySQLDriver", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/munkirjat_scala?user=root&password=&characterEncoding=UTF-8", "models", "model", "root", "")
+	    )
+	    */
 	    Ok(views.html.home(""))
 	}
 	
