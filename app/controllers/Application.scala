@@ -9,9 +9,6 @@ object Application extends Controller {
 
 	def index = Action {
 	    
-	    
-	    
-	    
 	    val driver = Play.current.configuration.getString("db.default.driver").getOrElse("")
 	    val url = Play.current.configuration.getString("db.default.url").getOrElse("")
 	    val db = Database.forURL(url, driver = "com.mysql.jdbc.Driver")
