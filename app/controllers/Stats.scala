@@ -34,6 +34,13 @@ object Stats extends Controller {
 		val service: StatsService = new StatsService(TableQuery[Book], db)
 		val stash = service.getPageCount()
 
+		data.push(Map("title" -> Json.toJson("Length"), "value" -> Json.toJson(stash.length)))
+		
+		stash foreach { case (row: BookRow) =>
+		    //row.
+        	data.push(Map("title" -> Json.toJson(row.title), "value" -> Json.toJson(row.id)))
+        }
+		
 		Ok(Json.toJson(data))
 		
 	}
