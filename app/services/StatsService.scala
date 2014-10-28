@@ -26,7 +26,6 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         }
     }
     
-    
     def getPageCount(): Int = {
         db.withSession { implicit session =>            
             books.map(_.pageCount).sum.run.getOrElse(0)
@@ -56,4 +55,15 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
 
 	    stack
 	}
+    
+    def getStatistics(): Map[String, Any] = {
+        Map(
+        	"authorCount" 		-> getAuthorCount().toString(),
+        	"bookCount" 		-> getBookCount(),
+        	"unreadBookCount" 	-> getUnreadBookCount(),
+        	"pageCount"			-> getPageCount(),
+        	"readPageCount"		-> getReadPageCount(),
+        	"moneySpent"		-> getMoneySpentOnBooks()
+        )
+    }
 }
