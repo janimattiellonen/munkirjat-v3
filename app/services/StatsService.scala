@@ -1,7 +1,8 @@
 package services
 
 import scala.slick.driver.MySQLDriver.simple._
-
+import scala.slick.jdbc.StaticQuery.interpolation
+import scala.slick.jdbc.GetResult
 import models.Tables._
 
 import collection.mutable.Stack
@@ -38,10 +39,59 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         }
     }
     
+    /**
+     * Only includes books that have a price.
+     */
+    def getAverageBookPrice(): BigDecimal = {
+        db.withSession { implicit session =>            
+            books.filter(_.price > BigDecimal(0.0)).map(_.price).avg.run.getOrElse(0.0).asInstanceOf[BigDecimal]
+        }
+    }
+    
     def getReadPageCount(): Int = {
         db.withSession { implicit session =>            
             books.filter(_.isRead === true).map(_.pageCount).sum.run.getOrElse(0)
         }
+    }
+    
+    def getSlowestReadTime(): BigDecimal = {
+        
+        val query = sql"""
+			SELECT
+	          MAX(DATEDIFF(finished_Reading, started_reading)) AS pace
+	        FROM
+	          book
+	        WHERE
+	          is_read = 1
+	          AND started_reading IS NOT NULL
+	          AND finished_reading IS NOT NULL""".as[(BigDecimal)]
+        
+        val diff = db.withSession { implicit session => 
+        	query.first
+        }
+        	
+        diff
+    }
+    
+    def getFastestReadTime(): BigDecimal = {
+        
+        val query = sql"""
+			SELECT
+	          MIN(DATEDIFF(finished_Reading, started_reading)) AS pace
+	        FROM
+	          book
+	        WHERE
+	          is_read = 1
+	          AND started_reading IS NOT NULL
+	          AND started_reading > '2000-01-01 00:00:00'
+	          AND finished_reading IS NOT NULL
+	          AND finished_reading > '2000-01-01 00:00:00'""".as[(BigDecimal)]
+        
+	    val diff = db.withSession { implicit session => 
+        	query.first
+        }
+        	
+        diff
     }
     
     def getPageCount2(): Stack[BookRow] = {
@@ -63,7 +113,10 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         	"unreadBookCount" 	-> getUnreadBookCount(),
         	"pageCount"			-> getPageCount(),
         	"readPageCount"		-> getReadPageCount(),
-        	"moneySpent"		-> getMoneySpentOnBooks()
+        	"moneySpent"		-> getMoneySpentOnBooks(),
+        	"avgBookPrice"		-> getAverageBookPrice(),
+        	"slowestReadTime"	-> getSlowestReadTime(),
+        	"fastestReadTime"	-> getFastestReadTime()
         )
     }
 }

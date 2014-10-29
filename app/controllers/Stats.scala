@@ -20,13 +20,6 @@ object Stats extends Controller {
 		
 		val service: StatsService = new StatsService(TableQuery[Book], TableQuery[Author], db)
 		
-		val authorCount: Int = service.getAuthorCount()
-		val bookCount: Int = service.getBookCount()
-		val unreadBookCount: Int = service.getUnreadBookCount()
-		val pageCount: Int = service.getPageCount()
-		val readPageCount : Int = service.getReadPageCount
-		val moneySpent: BigDecimal = service.getMoneySpentOnBooks()
-		
 		val stats: Map[String, Any] = service.getStatistics()
 
 		stats.foreach { case(key, value) =>
