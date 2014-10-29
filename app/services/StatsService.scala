@@ -4,9 +4,9 @@ import scala.slick.driver.MySQLDriver.simple._
 import scala.slick.jdbc.StaticQuery.interpolation
 import scala.slick.jdbc.GetResult
 import models.Tables._
-
 import collection.mutable.Stack
 import play.api.libs.json.Json
+import scala.math.ScalaNumber
 class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author], db: Database) {
 	    
     def getAuthorCount(): Int = {
@@ -73,6 +73,27 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         diff
     }
     
+    
+    def getAverageReadTime(): BigDecimal = {
+        
+        val query = sql"""
+			SELECT
+	          AVG(DATEDIFF(finished_Reading, started_reading)) AS pace
+	        FROM
+	          book
+	        WHERE
+	          is_read = 1
+	          AND started_reading IS NOT NULL
+	          AND finished_reading IS NOT NULL
+        """.as[(BigDecimal)]
+        
+        val average = db.withSession { implicit session => 
+        	query.first
+        }
+        
+        average
+    }
+    
     def getFastestReadTime(): BigDecimal = {
         
         val query = sql"""
@@ -87,11 +108,11 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
 	          AND finished_reading IS NOT NULL
 	          AND finished_reading > '2000-01-01 00:00:00'""".as[(BigDecimal)]
         
-	    val diff = db.withSession { implicit session => 
+	    val fastest = db.withSession { implicit session => 
         	query.first
         }
         	
-        diff
+        fastest
     }
     
     def getPageCount2(): Stack[BookRow] = {
@@ -106,6 +127,10 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
 	    stack
 	}
     
+    def getEstimatedTimeToReadAllUnreadBooks(): BigDecimal = {
+        round(getAverageReadTime() * getUnreadBookCount() / 365, 2)
+    }
+    
     def getStatistics(): Map[String, Any] = {
         Map(
         	"authorCount" 		-> getAuthorCount().toString(),
@@ -113,10 +138,16 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         	"unreadBookCount" 	-> getUnreadBookCount(),
         	"pageCount"			-> getPageCount(),
         	"readPageCount"		-> getReadPageCount(),
-        	"moneySpent"		-> getMoneySpentOnBooks(),
-        	"avgBookPrice"		-> getAverageBookPrice(),
-        	"slowestReadTime"	-> getSlowestReadTime(),
-        	"fastestReadTime"	-> getFastestReadTime()
+        	"moneySpent"		-> round(getMoneySpentOnBooks()),
+        	"avgBookPrice"		-> round(getAverageBookPrice()),
+        	"slowestReadTime"	-> round(getSlowestReadTime()),
+        	"fastestReadTime"	-> round(getFastestReadTime()),
+        	"avgReadTime"		-> round(getAverageReadTime()),
+        	"timeToReadAll"		-> round(getEstimatedTimeToReadAllUnreadBooks())
         )
+    }
+    
+    def round(value: ScalaNumber, scale: Int = 2): BigDecimal = {
+    	BigDecimal(BigDecimal(value.toString()).toDouble).setScale(scale, BigDecimal.RoundingMode.HALF_UP)
     }
 }
