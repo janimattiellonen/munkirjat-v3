@@ -66,11 +66,9 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
 	          AND started_reading IS NOT NULL
 	          AND finished_reading IS NOT NULL""".as[(BigDecimal)]
         
-        val diff = db.withSession { implicit session => 
+        db.withSession { implicit session => 
         	query.first
         }
-        	
-        diff
     }
     
     
@@ -87,11 +85,9 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
 	          AND finished_reading IS NOT NULL
         """.as[(BigDecimal)]
         
-        val average = db.withSession { implicit session => 
+        db.withSession { implicit session => 
         	query.first
         }
-        
-        average
     }
     
     def getFastestReadTime(): BigDecimal = {
@@ -108,11 +104,9 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
 	          AND finished_reading IS NOT NULL
 	          AND finished_reading > '2000-01-01 00:00:00'""".as[(BigDecimal)]
         
-	    val fastest = db.withSession { implicit session => 
+	    db.withSession { implicit session => 
         	query.first
         }
-        	
-        fastest
     }
     
     def getPageCount2(): Stack[BookRow] = {
