@@ -108,19 +108,7 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         	query.first
         }
     }
-    
-    def getPageCount2(): Stack[BookRow] = {
-	    val stack = new Stack[BookRow]
-	    
-	    db.withSession { implicit session =>
-	        books foreach { case (row: BookRow) =>
-	            stack.push(row)
-	        }
-	    }
-
-	    stack
-	}
-    
+        
     def getEstimatedTimeToReadAllUnreadBooks(): BigDecimal = {
         round(getAverageReadTime() * getUnreadBookCount() / 365, 2)
     }
