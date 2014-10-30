@@ -7,6 +7,7 @@ import models.Tables._
 import collection.mutable.Stack
 import play.api.libs.json.Json
 import scala.math.ScalaNumber
+
 class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author], db: Database) {
 	    
     def getAuthorCount(): Int = {
