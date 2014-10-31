@@ -18,7 +18,8 @@ app.config(function ($translateProvider) {
 		timeToReadAll: 		'Estimated time to read all unread books',
 		slowestReadTime: 	'Slowest read time',
 		authorCount: 		'Authors in bookshelf',
-		unreadBookCount:	'Unread books'
+		unreadBookCount:	'Unread books',
+		currentlyReading:	'Currently reading'
 	});
 	  
 	$translateProvider.preferredLanguage('en');
@@ -43,13 +44,25 @@ app.config(['$stateProvider', '$urlRouterProvider',
             });
 }]);
 
+app.directive('currentlyReading', ['$compile', function($compile) {
+	return {
+		restrict: 'E',
+		replace: 'true',
+		template: '<div class="box h125"><h2 translate="currentlyReading"></h2><div ng-repeat="item in readBooks"><a href="">{{ item.title }}</a></div></div>',
+		controller: function($scope, $element, $attrs, $location, Stats) {
+			Stats.currentlyRead({}, function(result) {
+				$scope.readBooks = result;
+			});
+		}
+	}
+}]);
 
-app.directive('statsSidebar', ['$compile', '$translate', function($compile, $translate) {
+app.directive('statsSidebar', ['$compile', function($compile) {
     return {
         restrict: 'E',
         replace: true,
-        template: '<div class="stats"><h2>Statistics</h2><div class="item" ng-repeat="i in items"><h3 translate="{{ i.title }}">{{ i.title }}</h3><p>{{ format(i.title, i.value) }}</p></div></div>',
-        controller: function($scope, $element, $attrs, $location, Stats, $translate) {
+        template: '<div class="stats"><h2>Statistics</h2><div class="item" ng-repeat="item in items"><h3 translate="{{ item.title }}">{{ item.title }}</h3><p>{{ format(item.title, item.value) }}</p></div></div>',
+        controller: function($scope, $element, $attrs, $location, Stats) {
         	Stats.query({"foo": 1}, function(result) {
         		$scope.items = result;
         	});
@@ -67,5 +80,11 @@ app.directive('statsSidebar', ['$compile', '$translate', function($compile, $tra
 
 
 app.factory('Stats', ['$resource', function($resource) {
-    return $resource('/stats', {}, {'query': {method: 'GET', isArray: true}});
+    return $resource('/stats', 
+    	{}, 
+    	{
+    		query: { method: 'GET', isArray: true },
+    		currentlyRead: { method: 'GET', url: '/stats/currently-reading', isArray: true}
+    	}
+    );
 }]);

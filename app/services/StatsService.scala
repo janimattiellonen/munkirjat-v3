@@ -156,6 +156,29 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         )
     }
     
+    /*
+             $qb->select('b')
+            ->from('MunKirjat\BookBundle\Entity\Book', 'b')
+            ->where('b.isRead = 0')
+            ->andWhere('b.startedReading IS NOT NULL')
+            ->andWhere('b.finishedReading IS NULL')
+            ->orderBy('b.finishedReading', 'DESC')
+            ->setMaxResults(1);
+     */
+    
+    
+    def getCurrentlyReadBooks(): Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = {
+        return db.withSession { implicit session =>            
+            return books
+            	.filter(b => b.isRead === false && b.startedReading.isNotNull && b.finishedReading.isNull)
+            	.sortBy(b => b.startedReading.desc)
+            	.map(b => (b.id, b.title, b.startedReading, b.finishedReading, b.isRead))
+            	.run
+            
+            //books.filter(_.price > BigDecimal(0.0)).map(_.price).avg.run.getOrElse(0.0).asInstanceOf[BigDecimal]
+        }
+    }
+    
     def round(value: ScalaNumber, scale: Int = 2): BigDecimal = {
     	BigDecimal(BigDecimal(value.toString()).toDouble).setScale(scale, BigDecimal.RoundingMode.HALF_UP)
     }
