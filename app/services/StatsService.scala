@@ -34,9 +34,35 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         }
     }
     
-    def getMoneySpentOnBooks(): BigDecimal = {
+    def test(): (Int, BigDecimal) = {
+        
+        val query = sql"""
+            SELECT
+            COUNT(*) AS amount,
+            SUM(price) AS book_sum
+        FROM
+            book
+        WHERE
+            price > 0""".as[(Int, BigDecimal)]
+            
         db.withSession { implicit session =>            
-            books.map(_.price).sum.run.getOrElse(0.0).asInstanceOf[BigDecimal]
+            query.first
+        }
+    }
+    
+    def getMoneySpentOnBooks(): (Int, BigDecimal) = {
+        
+        val query = sql"""
+            SELECT
+            COUNT(*) AS amount,
+            SUM(price) AS book_sum
+        FROM
+            book
+        WHERE
+            price > 0""".as[(Int, BigDecimal)]
+            
+        db.withSession { implicit session =>            
+            query.first
         }
     }
     
@@ -116,17 +142,17 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
     
     def getStatistics(): Map[String, Any] = {
         Map(
-        	"authorCount" 		-> getAuthorCount().toString(),
+        	"authorCount" 		-> getAuthorCount(),
         	"bookCount" 		-> getBookCount(),
         	"unreadBookCount" 	-> getUnreadBookCount(),
         	"pageCount"			-> getPageCount(),
         	"readPageCount"		-> getReadPageCount(),
-        	"moneySpent"		-> round(getMoneySpentOnBooks()),
-        	"avgBookPrice"		-> round(getAverageBookPrice()),
-        	"slowestReadTime"	-> round(getSlowestReadTime()),
-        	"fastestReadTime"	-> round(getFastestReadTime()),
-        	"avgReadTime"		-> round(getAverageReadTime()),
-        	"timeToReadAll"		-> round(getEstimatedTimeToReadAllUnreadBooks())
+        	"moneySpent"		-> getMoneySpentOnBooks(),
+        	"avgBookPrice"		-> getAverageBookPrice(),
+        	"slowestReadTime"	-> getSlowestReadTime(),
+        	"fastestReadTime"	-> getFastestReadTime(),
+        	"avgReadTime"		-> getAverageReadTime(),
+        	"timeToReadAll"		-> getEstimatedTimeToReadAllUnreadBooks()
         )
     }
     
