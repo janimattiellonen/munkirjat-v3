@@ -36,7 +36,11 @@ object Stats extends Controller {
 	    val results: Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getService().getCurrentlyReadBooks()
 	    
 	    for (result <- results) {
-	        data.push(Map("id" -> Json.toJson(result._1.toString()), "title" -> Json.toJson(result._2), "is_read" -> Json.toJson(result._5.toString())))
+	        data.push(Map(
+	        	"id" -> Json.toJson(result._1.toString()), 
+	        	"title" -> Json.toJson(result._2), 
+	        	"started_reading" -> Json.toJson(result._3), 
+	        	"is_read" -> Json.toJson(result._5.toString())))
 	    }
 	    
 	    Ok(Json.toJson(data))
