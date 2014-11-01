@@ -48,7 +48,7 @@ app.directive('currentlyReading', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: 'true',
-		template: '<div class="box h125"><h2 translate="currentlyReading"></h2><div ng-repeat="item in readBooks"><a href="">{{ item.title }} - {{formatDate(item.started_reading) }}</a></div></div>',
+		template: '<div class="box h125"><h2 translate="currentlyReading"></h2><div ng-repeat="item in readBooks"><a href="">{{ item.title }} - {{formatDate(item.started_reading) }} ({{ daysRead(item.started_reading) }} days)</a></div></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.currentlyRead({}, function(result) {
 				$scope.readBooks = result;
@@ -57,6 +57,12 @@ app.directive('currentlyReading', ['$compile', function($compile) {
 			$scope.formatDate = function(date) {
 				return moment(date).format("D.M.YYYY")
 			};
+			
+			$scope.daysRead = function(date) {
+				var startedReading = moment(date);
+	            var now = moment();
+	            return now.diff(startedReading, 'days') + 1;
+			}
 		}
 	}
 }]);

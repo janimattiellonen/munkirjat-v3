@@ -167,11 +167,12 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
      */
     
     
-    def getCurrentlyReadBooks(): Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = {
+    def getCurrentlyReadBooks(limit:Int = 3): Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = {
         return db.withSession { implicit session =>            
             return books
             	.filter(b => b.isRead === false && b.startedReading.isNotNull && b.finishedReading.isNull)
-            	.sortBy(b => b.startedReading.desc)
+            	.take(limit)
+            	.sortBy(b => b.startedReading.asc)
             	.map(b => (b.id, b.title, b.startedReading, b.finishedReading, b.isRead))
             	.run
             
