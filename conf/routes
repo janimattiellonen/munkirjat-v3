@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index
 GET     /stats                      controllers.Stats.stats
 GET     /stats/currently-reading    controllers.Stats.currentlyReading
+GET     /stats/latest-read    		controllers.Stats.latestRead
 
 # AngularJS templates
 

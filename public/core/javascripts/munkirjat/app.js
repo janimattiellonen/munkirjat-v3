@@ -19,7 +19,8 @@ app.config(function ($translateProvider) {
 		slowestReadTime: 	'Slowest read time',
 		authorCount: 		'Authors in bookshelf',
 		unreadBookCount:	'Unread books',
-		currentlyReading:	'Currently reading'
+		currentlyReading:	'Currently reading',
+		latestRead:			'Latest read book'
 	});
 	  
 	$translateProvider.preferredLanguage('en');
@@ -48,21 +49,38 @@ app.directive('currentlyReading', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: 'true',
-		template: '<div class="box h125"><h2 translate="currentlyReading"></h2><div ng-repeat="item in readBooks"><a href="">{{ item.title }} - {{formatDate(item.started_reading) }} ({{ daysRead(item.started_reading) }} days)</a></div></div>',
+		template: '<div class="box h190"><h2 translate="currentlyReading"></h2><ul><li ng-repeat="item in currentlyReadBooks"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} ({{ daysRead(item.started_reading) }} days)</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
-			Stats.currentlyRead({}, function(result) {
-				$scope.readBooks = result;
+			Stats.currentlyReading({}, function(result) {
+				$scope.currentlyReadBooks = result;
 			});
 			
 			$scope.formatDate = function(date) {
 				return moment(date).format("D.M.YYYY")
 			};
 			
-			$scope.daysRead = function(date) {
-				var startedReading = moment(date);
-	            var now = moment();
+			$scope.daysRead = function(startDate, endDate = null) {
+				var startedReading = moment(startDate);
+	            var now = endDate == null ? moment() : moment(endDate);
 	            return now.diff(startedReading, 'days') + 1;
 			}
+		}
+	}
+}]);
+
+app.directive('latestRead', ['$compile', function($compile) {
+	return {
+		restrict: 'E',
+		replace: true,
+		template: '<div class="box h190"><h2 translate="latestRead"></h2><ul><li ng-repeat="item in latestReadBook"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} - {{formatDate(item.finished_reading) }} ({{ daysRead(item.started_reading, item.finished_reading) }} days)</a></li></ul></div>',
+		controller: function($scope, $element, $attrs, $location, Stats) {
+			Stats.latestRead({}, function(result) {
+				$scope.latestReadBook = result;
+			});
+			
+			$scope.formatDate = function(date) {
+				return moment(date).format("D.M.YYYY")
+			};
 		}
 	}
 }]);
@@ -94,7 +112,8 @@ app.factory('Stats', ['$resource', function($resource) {
     	{}, 
     	{
     		query: { method: 'GET', isArray: true },
-    		currentlyRead: { method: 'GET', url: '/stats/currently-reading', isArray: true}
+    		currentlyReading: { method: 'GET', url: '/stats/currently-reading', isArray: true},
+    		latestRead: { method: 'GET', url: '/stats/latest-read', isArray: true}
     	}
     );
 }]);

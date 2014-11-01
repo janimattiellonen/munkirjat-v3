@@ -157,26 +157,34 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
     }
     
     /*
-             $qb->select('b')
+     *         $qb->select('b')
             ->from('MunKirjat\BookBundle\Entity\Book', 'b')
-            ->where('b.isRead = 0')
-            ->andWhere('b.startedReading IS NOT NULL')
-            ->andWhere('b.finishedReading IS NULL')
+            ->where('b.isRead = 1')
             ->orderBy('b.finishedReading', 'DESC')
             ->setMaxResults(1);
      */
     
-    
     def getCurrentlyReadBooks(limit:Int = 3): Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = {
-        return db.withSession { implicit session =>            
-            return books
+        db.withSession { implicit session =>            
+            books
             	.filter(b => b.isRead === false && b.startedReading.isNotNull && b.finishedReading.isNull)
             	.take(limit)
             	.sortBy(b => b.startedReading.asc)
             	.map(b => (b.id, b.title, b.startedReading, b.finishedReading, b.isRead))
             	.run
-            
-            //books.filter(_.price > BigDecimal(0.0)).map(_.price).avg.run.getOrElse(0.0).asInstanceOf[BigDecimal]
+        }
+    }
+    
+    def getLatestReadBook(): (Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean) = {
+        db.withSession { implicit session =>            
+            books
+            	.filter(b => b.isRead === true && b.finishedReading.isNotNull)
+            	.take(1)
+            	.sortBy(b => b.finishedReading.desc)
+            	.map(b => (b.id, b.title, b.startedReading, b.finishedReading, b.isRead))
+            	.first
+            	.run
+            	
         }
     }
     

@@ -46,6 +46,21 @@ object Stats extends Controller {
 	    Ok(Json.toJson(data))
 	}
 	
+	def latestRead = Action {
+	    val result: (Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean) = getService().getLatestReadBook()
+	    
+	    val data = new collection.mutable.Stack[Map[String, JsValue]]
+	    
+        data.push(Map(
+        	"id" -> Json.toJson(result._1.toString()), 
+        	"title" -> Json.toJson(result._2), 
+        	"started_reading" -> Json.toJson(result._3), 
+        	"finished_reading" -> Json.toJson(result._4), 
+        	"is_read" -> Json.toJson(result._5.toString())))
+	    
+	    Ok(Json.toJson(data))
+	}
+	
 	def getService(): StatsService = {
 		val driver = Play.current.configuration.getString("db.default.driver").getOrElse("")
 	    val url = Play.current.configuration.getString("db.default.url").getOrElse("")
