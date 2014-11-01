@@ -59,7 +59,7 @@ app.directive('currentlyReading', ['$compile', function($compile) {
 				return moment(date).format("D.M.YYYY")
 			};
 			
-			$scope.daysRead = function(startDate, endDate = null) {
+			$scope.daysRead = function(startDate, endDate) {
 				var startedReading = moment(startDate);
 	            var now = endDate == null ? moment() : moment(endDate);
 	            return now.diff(startedReading, 'days') + 1;
