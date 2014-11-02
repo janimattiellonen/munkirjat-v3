@@ -3,44 +3,50 @@ package controllers
 import scala.slick.driver.MySQLDriver.simple._
 import play.api._
 import play.api.mvc._
-
 import services.StatsService
 import models.Tables._
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
+import scala.math.ScalaNumber
+import scala.collection.mutable.ListBuffer
+
 
 object Stats extends Controller {
 	def stats = Action {
 		
-		val data = new collection.mutable.Stack[Map[String, JsValue]]
+		val data = new ListBuffer[Map[String, JsValue]]()
 		
 		val stats: Map[String, Any] = getService().getStatistics()
 
 		stats.foreach { 
 		    case(key, value:(Int, BigDecimal)) 
-		    	=> data.push(Map(
+		    	=> data += Map(
 	    	        "title" -> Json.toJson(key.toString()), 
 	    	        "value" -> Json.toJson(Map("title" ->value._1.toString(), 
-	    	        "value" -> value._2.toString()))))
-		    case(key, value:BigDecimal) => data.push(Map("title" -> Json.toJson(key), "value" -> Json.toJson(value)))
-		    case(key, value:Int) => data.push(Map("title" -> Json.toJson(key), "value" -> Json.toJson(value)))
+	    	        "value" -> round(value._2, 2).toString())))
+		    case(key, value:BigDecimal) => data += Map("title" -> Json.toJson(key), "value" -> Json.toJson(round(value, 2)))
+		    case(key, value:Int) => data += Map("title" -> Json.toJson(key), "value" -> Json.toJson(value))
 		}
 
 		Ok(Json.toJson(data))
 	}
 	
+	def round(value: ScalaNumber, scale: Int = 2): BigDecimal = {
+    	BigDecimal(BigDecimal(value.toString()).toDouble).setScale(scale, BigDecimal.RoundingMode.HALF_UP)
+    }
+	
 	def currentlyReading = Action {
 	    
-	    val data = new collection.mutable.Stack[Map[String, JsValue]]
+	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
 	    val results: Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getService().getCurrentlyReadBooks()
 	    
 	    for (result <- results) {
-	        data.push(Map(
+	        data += Map(
 	        	"id" -> Json.toJson(result._1.toString()), 
 	        	"title" -> Json.toJson(result._2), 
 	        	"started_reading" -> Json.toJson(result._3), 
-	        	"is_read" -> Json.toJson(result._5.toString())))
+	        	"is_read" -> Json.toJson(result._5.toString()))
 	    }
 	    
 	    Ok(Json.toJson(data))
@@ -49,14 +55,32 @@ object Stats extends Controller {
 	def latestRead = Action {
 	    val result: (Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean) = getService().getLatestReadBook()
 	    
-	    val data = new collection.mutable.Stack[Map[String, JsValue]]
+	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
-        data.push(Map(
+        data += Map(
         	"id" -> Json.toJson(result._1.toString()), 
         	"title" -> Json.toJson(result._2), 
         	"started_reading" -> Json.toJson(result._3), 
         	"finished_reading" -> Json.toJson(result._4), 
-        	"is_read" -> Json.toJson(result._5.toString())))
+        	"is_read" -> Json.toJson(result._5.toString()))
+	    
+	    Ok(Json.toJson(data))
+	}
+	
+	def latestAdded = Action {
+	    
+	    val results: Seq[(Int, String, java.sql.Timestamp)] = getService().getLatestAddedBooks(3)
+	    
+	    val data = new ListBuffer[Map[String, JsValue]]()
+	    
+	    for (result <- results) {
+	        data += Map(
+	        	"id" -> Json.toJson(result._1.toString()), 
+	        	"title" -> Json.toJson(result._2.toString()), 
+	        	"created_at" -> Json.toJson(result._3.toString())
+	        )
+	        
+	    }
 	    
 	    Ok(Json.toJson(data))
 	}
