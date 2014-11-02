@@ -156,20 +156,12 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         )
     }
     
-    /*
-     *         $qb->select('b')
-            ->from('MunKirjat\BookBundle\Entity\Book', 'b')
-            ->where('b.isRead = 1')
-            ->orderBy('b.finishedReading', 'DESC')
-            ->setMaxResults(1);
-     */
-    
     def getCurrentlyReadBooks(limit:Int = 3): Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = {
         db.withSession { implicit session =>            
             books
             	.filter(b => b.isRead === false && b.startedReading.isNotNull && b.finishedReading.isNull)
-            	.take(limit)
             	.sortBy(b => b.startedReading.desc)
+            	.take(limit)
             	.map(b => (b.id, b.title, b.startedReading, b.finishedReading, b.isRead))
             	.run
         }
@@ -179,8 +171,8 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         db.withSession { implicit session =>            
             books
             	.filter(b => b.isRead === true && b.finishedReading.isNotNull)
-            	.take(1)
             	.sortBy(b => b.finishedReading.desc)
+            	.take(1)
             	.map(b => (b.id, b.title, b.startedReading, b.finishedReading, b.isRead))
             	.first
             	.run

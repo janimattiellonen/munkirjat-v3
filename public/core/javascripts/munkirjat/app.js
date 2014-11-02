@@ -20,7 +20,8 @@ app.config(function ($translateProvider) {
 		authorCount: 		'Authors in bookshelf',
 		unreadBookCount:	'Unread books',
 		currentlyReading:	'Currently reading',
-		latestRead:			'Latest read book'
+		latestRead:			'Latest read book',
+		latestAdded:		'Latest added books'
 	});
 	  
 	$translateProvider.preferredLanguage('en');
@@ -85,6 +86,19 @@ app.directive('latestRead', ['$compile', function($compile) {
 	}
 }]);
 
+app.directive('latestAdded', ['$compile', function($compile) {
+	return {
+		restrict: 'E',
+		replace: true,
+		template: '<div class="box h_tallest"><h2 translate="latestAdded"></h2><ul><li ng-repeat="item in latestAdded"><a href="{{ item.id }}">{{ item.title }}<br/>{{formatDate(item.createdAt) }}</a></li></ul></div>',
+		controller: function($scope, $element, $attrs, $location, Stats) {
+			Stats.latestAdded({}, function(result) {
+				$scope.latestAdded = result;
+			});
+		}
+	}
+}]);
+
 app.directive('statsSidebar', ['$compile', function($compile) {
     return {
         restrict: 'E',
@@ -113,7 +127,8 @@ app.factory('Stats', ['$resource', function($resource) {
     	{
     		query: { method: 'GET', isArray: true },
     		currentlyReading: { method: 'GET', url: '/stats/currently-reading', isArray: true},
-    		latestRead: { method: 'GET', url: '/stats/latest-read', isArray: true}
+    		latestRead: { method: 'GET', url: '/stats/latest-read', isArray: true},
+    		latestAdded: { method: 'GET', url: '/stats/latest-added', isArray: true }
     	}
     );
 }]);

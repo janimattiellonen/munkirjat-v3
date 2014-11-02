@@ -79,7 +79,6 @@ object Stats extends Controller {
 	        	"title" -> Json.toJson(result._2.toString()), 
 	        	"created_at" -> Json.toJson(result._3.toString())
 	        )
-	        
 	    }
 	    
 	    Ok(Json.toJson(data))
