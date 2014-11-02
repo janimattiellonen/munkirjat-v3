@@ -49,7 +49,7 @@ app.directive('currentlyReading', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: 'true',
-		template: '<div class="box h190"><h2 translate="currentlyReading"></h2><ul><li ng-repeat="item in currentlyReadBooks"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} ({{ daysRead(item.started_reading) }} days)</a></li></ul></div>',
+		template: '<div class="box h_taller"><h2 translate="currentlyReading"></h2><ul><li ng-repeat="item in currentlyReadBooks"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} ({{ daysRead(item.started_reading) }} days)</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.currentlyReading({}, function(result) {
 				$scope.currentlyReadBooks = result;
@@ -72,7 +72,7 @@ app.directive('latestRead', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div class="box h190"><h2 translate="latestRead"></h2><ul><li ng-repeat="item in latestReadBook"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} - {{formatDate(item.finished_reading) }} ({{ daysRead(item.started_reading, item.finished_reading) }} days)</a></li></ul></div>',
+		template: '<div class="box h_taller"><h2 translate="latestRead"></h2><ul><li ng-repeat="item in latestReadBook"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} - {{formatDate(item.finished_reading) }} ({{ daysRead(item.started_reading, item.finished_reading) }} days)</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.latestRead({}, function(result) {
 				$scope.latestReadBook = result;
