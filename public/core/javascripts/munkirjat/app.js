@@ -21,7 +21,8 @@ app.config(function ($translateProvider) {
 		unreadBookCount:	'Unread books',
 		currentlyReading:	'Currently reading',
 		latestRead:			'Latest read book',
-		latestAdded:		'Latest added books'
+		latestAdded:		'Latest added books',
+		favouriteAuthors:	'Favourite authors'
 	});
 	  
 	$translateProvider.preferredLanguage('en');
@@ -99,6 +100,19 @@ app.directive('latestAdded', ['$compile', function($compile) {
 	}
 }]);
 
+app.directive('favouriteAuthors', ['$compile', function($compile) {
+	return {
+		restrict: 'E',
+		replace: true,
+		template: '<div class="box h_tallest"><h2 translate="favouriteAuthors"></h2><ul><li ng-repeat="item in favouriteAuthors"><a href="{{ item.id }}">{{ item.firstname }} {{ item.lastname}} ({{ item.amount }})</a></li></ul></div>',
+		controller: function($scope, $element, $attrs, $location, Stats) {
+			Stats.favouriteAuthors({}, function(result) {
+				$scope.favouriteAuthors = result;
+			});
+		}
+	}
+}]);
+
 app.directive('statsSidebar', ['$compile', function($compile) {
     return {
         restrict: 'E',
@@ -128,7 +142,8 @@ app.factory('Stats', ['$resource', function($resource) {
     		query: { method: 'GET', isArray: true },
     		currentlyReading: { method: 'GET', url: '/stats/currently-reading', isArray: true},
     		latestRead: { method: 'GET', url: '/stats/latest-read', isArray: true},
-    		latestAdded: { method: 'GET', url: '/stats/latest-added', isArray: true }
+    		latestAdded: { method: 'GET', url: '/stats/latest-added', isArray: true },
+    		favouriteAuthors: { method: 'GET', url: '/stats/favourite-authors', isArray: true }
     	}
     );
 }]);

@@ -7,8 +7,10 @@ import models.Tables._
 import collection.mutable.Stack
 import play.api.libs.json.Json
 import scala.math.ScalaNumber
+import scala.slick.lifted.Query
+import scala.slick.lifted.Column
 
-class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author], db: Database) {
+class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author], val persons: TableQuery[Person], val tasks: TableQuery[Task], val jobs:TableQuery[Job], val bookAuthors: TableQuery[BookAuthor], db: Database) {
 	    
     def getAuthorCount(): Int = {
         db.withSession { implicit session =>            
@@ -189,6 +191,51 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
             	.run
         }
     }
+    
+    /*
+     * SELECT
+			a.id,
+			a.firstname,
+			a.lastname,
+			count(b.id) AS amount
+		FROM
+			book b LEFT JOIN book_author ba ON b.id = ba.book_id
+			LEFT JOIN author a ON a.id = ba.author_id
+			GROUP BY a.id
+			HAVING amount > 3
+			ORDER BY amount DESC
+     * 
+     */
+    
+    def getFavouriteAuthors(): List[(Int, String, String, Int)] = {
+        
+        val query = sql"""
+            SELECT
+				a.id,
+				a.firstname,
+				a.lastname,
+				count(b.id) AS amount
+        	FROM
+        		book b LEFT JOIN book_author ba ON b.id = ba.book_id
+        		LEFT JOIN author a ON a.id = ba.author_id
+			GROUP BY a.id
+			HAVING amount > 3
+			ORDER BY amount DESC
+        	LIMIT 10""".as[(Int, String, String, Int)]
+            
+        db.withSession { implicit session =>            
+            query.list
+        }
+
+    }
+    
+    /*
+     * (for(p <- persons;
+     a <- addresses if p.livesAt === a.id
+ ) yield (p.last, a.city)
+).run
+     * 
+     */
     
     def round(value: ScalaNumber, scale: Int = 2): BigDecimal = {
     	BigDecimal(BigDecimal(value.toString()).toDouble).setScale(scale, BigDecimal.RoundingMode.HALF_UP)

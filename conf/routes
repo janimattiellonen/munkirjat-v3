@@ -8,6 +8,7 @@ GET     /stats                      controllers.Stats.stats
 GET     /stats/currently-reading    controllers.Stats.currentlyReading
 GET     /stats/latest-read    		controllers.Stats.latestRead
 GET     /stats/latest-added    		controllers.Stats.latestAdded
+GET     /stats/favourite-authors 	controllers.Stats.favouriteAuthors
 
 # AngularJS templates
 

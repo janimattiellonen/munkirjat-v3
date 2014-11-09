@@ -84,11 +84,28 @@ object Stats extends Controller {
 	    Ok(Json.toJson(data))
 	}
 	
+	def favouriteAuthors = Action {
+	    val results:List[(Int, String, String, Int)] = getService().getFavouriteAuthors()
+	    
+	    val data = new ListBuffer[Map[String, JsValue]]()
+	    
+	    for (result <- results) {
+	        data += Map(
+	        	"id" -> Json.toJson(result._1.toString()), 
+	        	"firstname" -> Json.toJson(result._2.toString()), 
+	        	"lastname" -> Json.toJson(result._3.toString()), 
+	        	"amount" -> Json.toJson(result._4.toString())
+	        )
+	    }
+	   	
+		Ok(Json.toJson(data))
+	}
+	
 	def getService(): StatsService = {
 		val driver = Play.current.configuration.getString("db.default.driver").getOrElse("")
 	    val url = Play.current.configuration.getString("db.default.url").getOrElse("")
 	    val db = Database.forURL(url, driver = "com.mysql.jdbc.Driver")
 
-		new StatsService(TableQuery[Book], TableQuery[Author], db)
+		new StatsService(TableQuery[Book], TableQuery[Author], TableQuery[Person], TableQuery[Task], TableQuery[Job], TableQuery[BookAuthor], db)
 	}
 }
