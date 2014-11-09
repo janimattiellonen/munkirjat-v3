@@ -10,12 +10,10 @@ import play.api.libs.json.JsValue
 import scala.math.ScalaNumber
 import scala.collection.mutable.ListBuffer
 
-
 object Stats extends Controller {
 	def stats = Action {
 		
 		val data = new ListBuffer[Map[String, JsValue]]()
-		
 		val stats: Map[String, Any] = getService().getStatistics()
 
 		stats.foreach { 
@@ -38,7 +36,6 @@ object Stats extends Controller {
 	def currentlyReading = Action {
 	    
 	    val data = new ListBuffer[Map[String, JsValue]]()
-	    
 	    val results: Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getService().getCurrentlyReadBooks()
 	    
 	    for (result <- results) {
@@ -54,7 +51,6 @@ object Stats extends Controller {
 	
 	def latestRead = Action {
 	    val result: (Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean) = getService().getLatestReadBook()
-	    
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
         data += Map(
@@ -70,7 +66,6 @@ object Stats extends Controller {
 	def latestAdded = Action {
 	    
 	    val results: Seq[(Int, String, java.sql.Timestamp)] = getService().getLatestAddedBooks(3)
-	    
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
 	    for (result <- results) {
@@ -86,7 +81,6 @@ object Stats extends Controller {
 	
 	def favouriteAuthors = Action {
 	    val results:List[(Int, String, String, Int)] = getService().getFavouriteAuthors()
-	    
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
 	    for (result <- results) {
@@ -99,6 +93,21 @@ object Stats extends Controller {
 	    }
 	   	
 		Ok(Json.toJson(data))
+	}
+	
+	def recentlyRead() = Action {
+	    
+		val results:Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getService().getRecentlyReadBooks(10)
+	    val data = new ListBuffer[Map[String, JsValue]]()
+	     
+	    for(result <- results) {
+	        data += Map(
+	        	"id" -> Json.toJson(result._1.toString()), 
+	        	"title" -> Json.toJson(result._2)
+	        )     
+	    }
+	    
+	    Ok(Json.toJson(data))
 	}
 	
 	def getService(): StatsService = {
