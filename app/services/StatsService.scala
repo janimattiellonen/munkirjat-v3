@@ -207,6 +207,17 @@ class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author],
         }
     }
     
+    def getUnreadBooks(limit:Int):Seq[(Int, String)] = {
+        db.withSession { implicit session => 
+            books
+            	.filter(b => b.isRead === false && b.finishedReading.isNull)
+            	.sortBy(b => b.createdAt.desc)
+            	.take(limit)
+            	.map(b => (b.id, b.title))
+            	.run
+        }
+    }
+    
     def round(value: ScalaNumber, scale: Int = 2): BigDecimal = {
     	BigDecimal(BigDecimal(value.toString()).toDouble).setScale(scale, BigDecimal.RoundingMode.HALF_UP)
     }

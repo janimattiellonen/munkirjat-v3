@@ -110,6 +110,21 @@ object Stats extends Controller {
 	    Ok(Json.toJson(data))
 	}
 	
+	def getUnread() = Action {
+	    val results:Seq[(Int, String)] = getService().getUnreadBooks(10)
+	    
+	    val data = new ListBuffer[Map[String, JsValue]]()
+	    
+	    for(result <- results) {
+	        data += Map(
+	        	"id" -> Json.toJson(result._1.toString()), 
+	        	"title" -> Json.toJson(result._2)     
+	        )
+	    }
+	    
+	    Ok(Json.toJson(data))
+	}
+	
 	def getService(): StatsService = {
 		val driver = Play.current.configuration.getString("db.default.driver").getOrElse("")
 	    val url = Play.current.configuration.getString("db.default.url").getOrElse("")
