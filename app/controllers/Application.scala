@@ -36,7 +36,7 @@ object Application extends Controller {
 		Ok(views.html.index(""))
 	}
 	
-	def home = Action {
+	def homeTemplate = Action {
 	   /*
 	    scala.slick.codegen.SourceCodeGenerator.main(
 	    	Array("scala.slick.driver.MySQLDriver", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/munkirjat_scala?user=root&password=&characterEncoding=UTF-8", "models", "model", "root", "")
@@ -45,8 +45,12 @@ object Application extends Controller {
 	    Ok(views.html.home(""))
 	}
 	
-	def about = Action {
+	def aboutTemplate = Action {
 	    Ok(views.html.about(""))
+	}
+	
+	def bookFormTemplate = Action {
+	    Ok(views.html.bookform(""))
 	}
 
 }
