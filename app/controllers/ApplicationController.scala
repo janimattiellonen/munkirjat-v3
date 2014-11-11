@@ -5,7 +5,7 @@ import play.api.mvc._
 import scala.slick.driver.MySQLDriver.simple._
 import models._
 
-object Application extends Controller {
+object ApplicationController extends Controller {
 
 	def index = Action {
 	    

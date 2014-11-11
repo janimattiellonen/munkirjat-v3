@@ -10,11 +10,11 @@ import play.api.libs.json.JsValue
 import scala.math.ScalaNumber
 import scala.collection.mutable.ListBuffer
 
-object Stats extends Controller {
+object StatsController extends BaseController {
 	def stats = Action {
 		
 		val data = new ListBuffer[Map[String, JsValue]]()
-		val stats: Map[String, Any] = getService().getStatistics()
+		val stats: Map[String, Any] = getStatsService().getStatistics()
 
 		stats.foreach { 
 		    case(key, value:(Int, BigDecimal)) 
@@ -36,7 +36,7 @@ object Stats extends Controller {
 	def currentlyReading = Action {
 	    
 	    val data = new ListBuffer[Map[String, JsValue]]()
-	    val results: Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getService().getCurrentlyReadBooks()
+	    val results: Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getStatsService().getCurrentlyReadBooks()
 	    
 	    for (result <- results) {
 	        data += Map(
@@ -50,7 +50,7 @@ object Stats extends Controller {
 	}
 	
 	def latestRead = Action {
-	    val result: (Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean) = getService().getLatestReadBook()
+	    val result: (Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean) = getStatsService().getLatestReadBook()
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
         data += Map(
@@ -65,7 +65,7 @@ object Stats extends Controller {
 	
 	def latestAdded = Action {
 	    
-	    val results: Seq[(Int, String, java.sql.Timestamp)] = getService().getLatestAddedBooks(3)
+	    val results: Seq[(Int, String, java.sql.Timestamp)] = getStatsService().getLatestAddedBooks(3)
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
 	    for (result <- results) {
@@ -80,7 +80,7 @@ object Stats extends Controller {
 	}
 	
 	def favouriteAuthors = Action {
-	    val results:List[(Int, String, String, Int)] = getService().getFavouriteAuthors()
+	    val results:List[(Int, String, String, Int)] = getStatsService().getFavouriteAuthors()
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
 	    for (result <- results) {
@@ -97,7 +97,7 @@ object Stats extends Controller {
 	
 	def recentlyRead() = Action {
 	    
-		val results:Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getService().getRecentlyReadBooks(10)
+		val results:Seq[(Int, String, Option[java.sql.Timestamp], Option[java.sql.Timestamp], Boolean)] = getStatsService().getRecentlyReadBooks(10)
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	     
 	    for(result <- results) {
@@ -111,7 +111,7 @@ object Stats extends Controller {
 	}
 	
 	def getUnread() = Action {
-	    val results:Seq[(Int, String)] = getService().getUnreadBooks(10)
+	    val results:Seq[(Int, String)] = getStatsService().getUnreadBooks(10)
 	    
 	    val data = new ListBuffer[Map[String, JsValue]]()
 	    
@@ -125,10 +125,8 @@ object Stats extends Controller {
 	    Ok(Json.toJson(data))
 	}
 	
-	def getService(): StatsService = {
-		val driver = Play.current.configuration.getString("db.default.driver").getOrElse("")
-	    val url = Play.current.configuration.getString("db.default.url").getOrElse("")
-	    val db = Database.forURL(url, driver = "com.mysql.jdbc.Driver")
+	def getStatsService(): StatsService = {
+		val db = getDatabase()
 
 		new StatsService(TableQuery[Book], TableQuery[Author], TableQuery[Person], TableQuery[Task], TableQuery[Job], TableQuery[BookAuthor], db)
 	}
