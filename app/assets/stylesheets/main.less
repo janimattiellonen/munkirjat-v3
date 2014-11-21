@@ -16,6 +16,29 @@ h1, h2, h3, h4 {
 	color: #901212;
 }
 
+a {
+	text-decoration: underline;
+}
+
+div.navbar {
+	a {
+		text-decoration: none;
+	}
+}
+
+article {
+	font-family: "freight-text-pro",Georgia,Cambria,"Times New Roman",Times,serif;
+	letter-spacing: 0.01rem;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 17px;
+	line-height: 1.5;
+	text-rendering: optimizelegibility;
+	-moz-osx-font-smoothing: grayscale;
+	-moz-font-feature-settings: "liga";
+	color: rgba(0, 0, 0, 0.8);
+}
+
 body {
 	background-image: url('/assets/core/images/background.jpg');
 	background-attachment: fixed;
@@ -56,7 +79,7 @@ body {
 			padding-bottom: 50px;
 	    
 	    }
-    
+
     }
     
    	div#main-container:after {
@@ -82,14 +105,10 @@ body {
 
 .box {
 	float: left;
-	padding: 15px;
+	padding: 5px;
 	display: inline-block;
-	width: 40%;
-	background: #f0f0f0; /* #eaeaea */
-	box-shadow: 2px 2px 1px #c4c4c4;
-	border-radius: 0 @radius @radius 0;
-	border-left: 3px solid #901212;
-	margin: 20px;
+	width: 43%;
+	margin: 10px 15px;
 	height: 200px;
 	
 	h2 {

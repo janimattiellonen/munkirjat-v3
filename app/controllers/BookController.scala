@@ -14,8 +14,24 @@ import models.Book
 import play.api.data._
 
 object BookController extends Controller {
-	def create = Action {
+	def create = Action { implicit request =>
 	    val data = new ListBuffer[Map[String, JsValue]]()
+	    
+		val bookForm = createBookForm()
+		
+		bookForm.bindFromRequest.fold(
+			formWithErrors => {
+			    
+	            data += Map(
+		        	"status" -> Json.toJson("false"))
+			    
+				BadRequest(Json.toJson(data))  
+			},
+			bookData => {
+			  
+							 
+			}
+		)
 	    
 	    Ok(Json.toJson(data))
 	}

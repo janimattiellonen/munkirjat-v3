@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.ApplicationController.index
+POST    /books						controllers.BookController.create
 GET     /stats                      controllers.StatsController.stats
 GET     /stats/currently-reading    controllers.StatsController.currentlyReading
 GET     /stats/latest-read    		controllers.StatsController.latestRead
