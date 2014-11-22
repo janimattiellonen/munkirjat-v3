@@ -1,0 +1,1 @@
+var Munkirjat = Munkirjat || {};
