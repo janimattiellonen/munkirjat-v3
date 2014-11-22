@@ -3,8 +3,8 @@ package controllers
 import scala.slick.driver.MySQLDriver.simple._
 import play.api._
 import play.api.mvc._
-import services.StatsService
 import models.Tables._
+import models.Tables.{Book => BookTable}
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
 import scala.math.ScalaNumber
@@ -16,11 +16,16 @@ import play.api.data.FormError
 import play.api.libs.json.Writes
 import scala.collection.Seq
 import validation.Constraints._
+import services.BookService
+import services.StatsService
+import services.BookService
+import services.BookService
 
 
-object BookController extends Controller {
+object BookController extends BaseController {
 	def create = Action { implicit request =>
 	    val data = new ListBuffer[Map[String, JsValue]]()
+	    
 	    
 		val bookForm = createBookForm()
 		
@@ -38,9 +43,16 @@ object BookController extends Controller {
 		        BadRequest(Json.toJson(data))	
 			},
 			bookData => {
+			    val authors = TableQuery[Author]
+			    
+			    getBookService().createBook()
 				Ok(Json.toJson(data))					 
 			}
 		)
+
+		
+	    
+	    Ok(Json.toJson(data))
 	}
 	
 	def createBookForm(): Form[Book] = {
@@ -52,5 +64,11 @@ object BookController extends Controller {
 		)
 		
 		return catForm
+	}
+	
+	def getBookService(): BookService = {
+		val db = getDatabase()
+
+		new BookService(TableQuery[BookTable], db)
 	}
 }
