@@ -12,6 +12,11 @@ import scala.collection.mutable.ListBuffer
 import play.api.data.Forms._
 import models.Book
 import play.api.data._
+import play.api.data.FormError
+import play.api.libs.json.Writes
+import scala.collection.Seq
+import validation.Constraints._
+
 
 object BookController extends Controller {
 	def create = Action { implicit request =>
@@ -19,27 +24,29 @@ object BookController extends Controller {
 	    
 		val bookForm = createBookForm()
 		
+        implicit val errorWrites = new Writes[FormError] {
+        	def writes(formError: FormError) = Json.obj(
+        		"key" -> formError.key,
+        		"message" -> formError.message
+        	)
+		}
+	    
 		bookForm.bindFromRequest.fold(
 			formWithErrors => {
-			    
-	            data += Map(
-		        	"status" -> Json.toJson("false"))
-			    
-				BadRequest(Json.toJson(data))  
+	            data += Map("errors" -> Json.toJson(formWithErrors.errors))
+		        	
+		        BadRequest(Json.toJson(data))	
 			},
 			bookData => {
-			  
-							 
+				Ok(Json.toJson(data))					 
 			}
 		)
-	    
-	    Ok(Json.toJson(data))
 	}
 	
 	def createBookForm(): Form[Book] = {
 		val catForm = Form(
 			mapping(
-		        "name" -> nonEmptyText,
+		        "title" -> text.verifying("Title is required", {!_.isEmpty}),
 		        "price"  -> bigDecimal
 		    )(Book.apply)(Book.unapply)
 		)

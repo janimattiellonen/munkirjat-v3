@@ -33,6 +33,7 @@ app.config(function ($translateProvider) {
 		formStartedReading:	'Started reading',
 		formFinishedReading:'Finished reading',
 		formStartReading:	'Start reading',
+		formFinishReading:	'Finish reading',
 		formBookLanguage:	'Language',
 		formBookFinnish:	'Finnish',	
 		formBookSwedish:	'Swedish',	
@@ -78,4 +79,13 @@ app.factory('Stats', ['$resource', function($resource) {
     		unread: { method: 'GET', url: '/stats/unread', isArray: true}
     	}
     );
+}]);
+
+app.factory('Books', ['$resource', function($resource) {
+	return $resource('/books/:bookId', 
+			{bookId: '@id'},
+			{
+				save: { method: 'POST', isArray: true}
+			}
+		);
 }]);

@@ -1,11 +1,11 @@
 @(message: String)
 
-<div ng-controller="NewBookController">
+<div id="book-creation" ng-controller="NewBookController">
 	<form>
 		<div class="form-group">
 	        <label for="inputTitle" class="col-sm-3 control-label" translate="formBookTitle"></label>
 	        <div class="col-sm-9">
-	          	<input type="text" class="form-control" id="inputTitle" placeholder="Title" ng-model="book.title" />
+	          	<input type="text" name="title" class="form-control" id="inputTitle" placeholder="Title" ng-model="book.title" />
 	        </div>
 	    </div>
 	    
@@ -37,7 +37,7 @@
 	   	<div class="form-group">
 	        <label for="inputPrice" class="col-sm-3 control-label" translate="formBookPrice"></label>
 	        <div class="col-sm-9">
-	          	<input type="text" class="form-control" id="inputPrice" ng-model="book.price" placeholder="{{ 'formBookPrice' | translate }}"/>
+	          	<input type="text" name="price" class="form-control" id="inputPrice" ng-model="book.price" placeholder="{{ 'formBookPrice' | translate }}"/>
 	        </div>
 	    </div>
 	    
