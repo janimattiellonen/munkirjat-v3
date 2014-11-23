@@ -4,7 +4,7 @@ app.controller('NewBookController', ['$rootScope', '$scope', '$stateParams', '$s
 	
         $scope.book = {
         	title: 				'',
-        	language:			'',
+        	languageId:			'',
         	pageCount:			'',
         	price:				'',
         	isRead:				'',

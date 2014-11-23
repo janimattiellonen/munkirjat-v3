@@ -14,13 +14,13 @@
 	    	
 			<div class="col-sm-9 btn-group">
 				<label class="btn btn-primary">
-			    	<input type="radio" name="options" id="option1" ng-model="book.language" value="fi" autocomplete="off"> {{ 'formBookFinnish' | translate }}</input>
+			    	<input type="radio" name="language" id="option1" ng-model="book.languageId" value="fi" autocomplete="off"> {{ 'formBookFinnish' | translate }}</input>
 			  	</label>
 			  	<label class="btn btn-primary">
-			    	<input type="radio" name="options" id="option2" ng-model="book.language" value="se" autocomplete="off"> {{ 'formBookSwedish' | translate }}</input>
+			    	<input type="radio" name="language" id="option2" ng-model="book.languageId" value="se" autocomplete="off"> {{ 'formBookSwedish' | translate }}</input>
 			  	</label>
 			  	<label class="btn btn-primary">
-			    	<input type="radio" name="options" id="option3" ng-model="book.language" value="en" autocomplete="off"> {{ 'formBookEnglish' | translate }}</input>
+			    	<input type="radio" name="language" id="option3" ng-model="book.languageId" value="en" autocomplete="off"> {{ 'formBookEnglish' | translate }}</input>
 			  	</label>
 			</div>	    
 			
@@ -30,7 +30,7 @@
 	   	<div class="form-group">
 	        <label for="inputPageCount" class="col-sm-3 control-label" translate="formBookPageCount"></label>
 	        <div class="col-sm-9">
-	          	<input type="text" class="form-control" id="inputPageCount" ng-model="book.pageCount" placeholder="{{ 'formBookPageCount' | translate }}" />
+	          	<input type="text" name="pageCount" class="form-control" id="inputPageCount" ng-model="book.pageCount" placeholder="{{ 'formBookPageCount' | translate }}" />
 	        </div>
 	    </div>
 	    
@@ -45,7 +45,7 @@
 	    	<div class="col-sm-offset-3 col-sm-9">
 		   	   	<div class="checkbox">
 			        <label>
-			          <input type="checkbox" ng-model="book.isRead"> <span translate="formBookIsRead"></span>
+			          <input type="checkbox" name="isRead" ng-model="book.isRead"> <span translate="formBookIsRead"></span>
 			        </label>
 			    </div>
 			</div>    
@@ -54,7 +54,7 @@
 	   	<div class="form-group">
 	        <label for="inputStartedReading" class="col-sm-3 control-label" translate="formStartedReading"></label>
 	        <div class="col-sm-9">
-	          	<input type="text" class="form-control datepicker" id="inputStartedReading" ng-model="book.startedReading" placeholder="{{ 'formStartedReading' | translate }}" datepicker ng-model="datePicker"/>
+	          	<input type="text" name="startedReading" class="form-control datepicker" id="inputStartedReading" ng-model="book.startedReading" placeholder="{{ 'formStartedReading' | translate }}" datepicker ng-model="datePicker"/>
 	          	<p>
 	          		<button type="button" class="btn btn-default" translate="formStartReading"></button>
 	          	</p>
@@ -64,7 +64,7 @@
 	   	<div class="form-group">
 	        <label for="inputFinishedReading" class="col-sm-3 control-label" translate="formFinishedReading"></label>
 	        <div class="col-sm-9">
-	          	<input type="text" class="form-control datepicker" id="inputFinishedReading" ng-model="book.finishedReading" placeholder="{{ 'formFinishedReading' | translate }}" datepicker ng-model="datePicker"/>
+	          	<input type="text" name="finishedReading" class="form-control datepicker" id="inputFinishedReading" ng-model="book.finishedReading" placeholder="{{ 'formFinishedReading' | translate }}" datepicker ng-model="datePicker"/>
 	          	<p>
 	          		<button type="button" class="btn btn-default" translate="formFinishReading"></button>
 	          	</p>
@@ -74,7 +74,7 @@
 	   	<div class="form-group">
 	        <label for="inputIsbn" class="col-sm-3 control-label" translate="formBookIsbn"></label>
 	        <div class="col-sm-9">
-	          	<input type="text" class="form-control" id=""inputIsbn"" placeholder="{{ 'formBookIsbn' | translate }}"/>
+	          	<input type="text" name="isbn" class="form-control" id=""inputIsbn"" placeholder="{{ 'formBookIsbn' | translate }}"/>
 	        </div>
 	    </div>      
 	    

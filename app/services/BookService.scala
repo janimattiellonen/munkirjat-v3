@@ -1,5 +1,7 @@
 package services
 import scala.slick.driver.MySQLDriver.simple._
+import models.Tables.{Book => BookTable}
+import models.Book
 import scala.slick.jdbc.StaticQuery.interpolation
 import scala.slick.jdbc.GetResult
 import models.Tables._
@@ -10,31 +12,27 @@ import scala.slick.lifted.Query
 import scala.slick.lifted.Column
 
 
-class BookService(val books: TableQuery[Book], db: Database) {
-	def createBook() = {
-	    val books = TableQuery[Book]
+class BookService(val books: TableQuery[BookTable], db: Database) {
+	def createBook(bookData: Book) = {
 	    
 	    db.withSession { implicit session =>            
-
 	        
 	        val d = new java.util.Date()
 	        
 	        books += BookRow(
 	        	0,
-	        	"Test title",
-	        	"en",
-	        	666,
-	        	true,
-	        	Some("34593479534795"),
+	        	bookData.title,
+	        	bookData.languageId,
+	        	bookData.pageCount,
+	        	bookData.isRead,
+	        	Some(bookData.isbn),
 	        	new java.sql.Timestamp(d.getTime),
 	        	new java.sql.Timestamp(d.getTime),
-	        	Some(new java.sql.Timestamp(d.getTime)),
-	        	Some(new java.sql.Timestamp(d.getTime)),
-	        	Some(3.5),
-	        	Some(123.45)
+	        	Some(null),
+	        	Some(null),
+	        	Some(0.0),
+	        	Some(bookData.price)
 	        )
-	        
-	        
         }
 	}
 }

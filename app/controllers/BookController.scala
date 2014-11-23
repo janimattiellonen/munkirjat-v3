@@ -17,10 +17,6 @@ import play.api.libs.json.Writes
 import scala.collection.Seq
 import validation.Constraints._
 import services.BookService
-import services.StatsService
-import services.BookService
-import services.BookService
-
 
 object BookController extends BaseController {
 	def create = Action { implicit request =>
@@ -43,23 +39,25 @@ object BookController extends BaseController {
 		        BadRequest(Json.toJson(data))	
 			},
 			bookData => {
-			    val authors = TableQuery[Author]
 			    
-			    getBookService().createBook()
+			    getBookService().createBook(bookData)
+			    
+			  //  data += Map("values" -> Json.toJson(bookData.title))
+			    
 				Ok(Json.toJson(data))					 
 			}
 		)
-
-		
-	    
-	    Ok(Json.toJson(data))
 	}
 	
 	def createBookForm(): Form[Book] = {
 		val catForm = Form(
 			mapping(
-		        "title" -> text.verifying("Title is required", {!_.isEmpty}),
-		        "price"  -> bigDecimal
+		        "title" 		-> text.verifying("Title is required", {!_.isEmpty}),
+		        "price"  		-> bigDecimal,
+		        "languageId" 	-> text.verifying("Language is required", {!_.isEmpty}),
+		        "pageCount"		-> number.verifying(min(1)),
+		        "isRead"		-> boolean,
+		        "isbn"			-> text
 		    )(Book.apply)(Book.unapply)
 		)
 		
