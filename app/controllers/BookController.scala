@@ -52,12 +52,14 @@ object BookController extends BaseController {
 	def createBookForm(): Form[Book] = {
 		val catForm = Form(
 			mapping(
-		        "title" 		-> text.verifying("Title is required", {!_.isEmpty}),
-		        "price"  		-> bigDecimal,
-		        "languageId" 	-> text.verifying("Language is required", {!_.isEmpty}),
-		        "pageCount"		-> number.verifying(min(1)),
-		        "isRead"		-> optional(boolean),
-		        "isbn"			-> text
+		        "title" 			-> text.verifying("Title is required", {!_.isEmpty}),
+		        "price"  			-> bigDecimal,
+		        "languageId" 		-> text.verifying("Language is required", {!_.isEmpty}),
+		        "pageCount"			-> number.verifying(min(1)),
+		        "isRead"			-> optional(boolean),
+		        "startedReading" 	-> optional(text),
+		        "finishedReading" 	-> optional(text),
+		        "isbn"				-> text
 		    )(Book.apply)(Book.unapply)
 		)
 		
