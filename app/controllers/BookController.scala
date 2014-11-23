@@ -56,7 +56,7 @@ object BookController extends BaseController {
 		        "price"  		-> bigDecimal,
 		        "languageId" 	-> text.verifying("Language is required", {!_.isEmpty}),
 		        "pageCount"		-> number.verifying(min(1)),
-		        "isRead"		-> boolean,
+		        "isRead"		-> optional(boolean),
 		        "isbn"			-> text
 		    )(Book.apply)(Book.unapply)
 		)

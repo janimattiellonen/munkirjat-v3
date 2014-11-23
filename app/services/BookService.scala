@@ -24,7 +24,7 @@ class BookService(val books: TableQuery[BookTable], db: Database) {
 	        	bookData.title,
 	        	bookData.languageId,
 	        	bookData.pageCount,
-	        	bookData.isRead,
+	        	bookData.isRead.getOrElse(false),
 	        	Some(bookData.isbn),
 	        	new java.sql.Timestamp(d.getTime),
 	        	new java.sql.Timestamp(d.getTime),
