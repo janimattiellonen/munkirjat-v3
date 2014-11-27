@@ -1,8 +1,12 @@
-var app = angular.module('app', [
+'use strict';
+
+var app = angular.module('munkirjat', [
    'ngRoute',                                 
    'ngResource',
    'ui.router',
-   'pascalprecht.translate'
+   'pascalprecht.translate',
+   'ngSanitize',
+   'ui.select'
 ]);
 	
 app.config(function ($translateProvider) {
@@ -27,6 +31,7 @@ app.config(function ($translateProvider) {
 		unread:				'Unread books',
 		formBookTitle:		'Title',
 		formBookPageCount:	'Page count',
+		formBookAuthors:	'Authors',
 		formBookPrice:		'Price',
 		formBookIsRead:		'Is read',
 		formBookIsbn:		'Isbn',

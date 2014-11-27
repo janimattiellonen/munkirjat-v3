@@ -114,7 +114,7 @@ app.directive('statsSidebar', ['$compile', function($compile) {
 
 app.directive('datepicker', function() {
     return {
-        restrict: 'A',
+        restrict: 'AE',
         require : 'ngModel',
         link : function (scope, element, attrs, ngModelCtrl) {
             $(function(){
@@ -130,3 +130,39 @@ app.directive('datepicker', function() {
         }
     }
 });
+
+app.directive('authorSelector', ['$compile', function($compile) {
+	return {
+		restrict: 'A',
+		link: function(scope, element, attrs) { 
+			$(document).ready(function() {
+				$('#authors').select2({
+					width: "300px",
+	                minimumInputLength: 2,
+	                multiple: true,
+	                allowClear: true,
+	                ajax: {
+	                    url: "/authors/search",
+	                    dataType: 'json',
+	                    data: function(term, page) {
+	                        return {
+	                            q: term
+	                        }
+	                    },
+	                    results: function(data, page) {
+	                        return {results: data};
+	                    }
+	                },
+
+	                formatSelection: function(author) {
+	                    return author.firstname + " " + author.lastname;
+	                },
+
+	                formatResult: function(author) {
+	                	return author.firstname + " " + author.lastname;
+	                }
+				});
+			});
+		}
+	}
+}])

@@ -5,8 +5,6 @@ import models.Book
 import scala.slick.jdbc.StaticQuery.interpolation
 import scala.slick.jdbc.GetResult
 import models.Tables._
-import collection.mutable.Stack
-import play.api.libs.json.Json
 import scala.math.ScalaNumber
 import scala.slick.lifted.Query
 import scala.slick.lifted.Column
