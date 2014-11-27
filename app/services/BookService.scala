@@ -13,14 +13,29 @@ import java.util.Date
 import java.text.SimpleDateFormat
 
 class BookService(val books: TableQuery[BookTable], db: Database) {
-	def createBook(bookData: Book) = {
+    
+	def createBook(bookData: Book):Int = {
 	    
-	    db.withSession { implicit session =>            
-	            	        
-	        books += createBookRow(bookData)
+	    db.withSession { implicit session =>                  
+	        val bookId:Int = (books returning books.map(_.id)) += createBookRow(bookData)
+	        
+	        addAuthorsToBook(bookId, bookData.authors)
+	        
+	        bookId
         }
 	}
 		
+	def addAuthorsToBook(bookId:Int, authorIds:List[Int]) = {
+	    
+	    val bookAuthors = TableQuery[BookAuthor]
+	    
+	    db.withSession { implicit session => 
+		    for(authorId <- authorIds) {
+		        bookAuthors += BookAuthorRow(bookId, authorId)
+		    }
+	    }
+	}
+	
 	def createBookRow(bookData:Book):BookRow = {
         val now 				= new Timestamp(new Date().getTime())
         val startedReadingTs 	= toTimestamp(bookData.startedReading)
@@ -40,7 +55,7 @@ class BookService(val books: TableQuery[BookTable], db: Database) {
         	Some(0.0),
         	Some(bookData.price)
         )
-	}
+  	}
 	
 	def toTimestamp(date:Option[String]):Option[Timestamp] = {
 	    val value:String 	= date.getOrElse(null)

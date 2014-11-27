@@ -15,8 +15,9 @@ app.controller('NewBookController', ['$rootScope', '$scope', '$stateParams', '$s
         };
         
         $scope.saveBook = function() {
+        	$scope.book.authors = $scope.getAuthors();
            	alert(JSON.stringify($scope.book));
-           	return;
+
         	Books.save($scope.book, function(result) {
         		alert("OK: " + JSON.stringify(result));
         	}, function(result) {
@@ -24,7 +25,7 @@ app.controller('NewBookController', ['$rootScope', '$scope', '$stateParams', '$s
         	});
         };
         
-        $scope.next = function() {
-        	console.log("cc1: " + $('#authors').val());
+        $scope.getAuthors = function() {
+        	return $('#authors').val().split(',');
         }
     }]);

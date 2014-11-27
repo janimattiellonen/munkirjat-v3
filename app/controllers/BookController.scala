@@ -20,9 +20,7 @@ import services.BookService
 
 object BookController extends BaseController {
 	def create = Action { implicit request =>
-	    val data = new ListBuffer[Map[String, JsValue]]()
-	    
-	    
+	    val data	 = new ListBuffer[Map[String, JsValue]]()
 		val bookForm = createBookForm()
 		
         implicit val errorWrites = new Writes[FormError] {
@@ -41,9 +39,7 @@ object BookController extends BaseController {
 			bookData => {
 			    
 			    getBookService().createBook(bookData)
-			    
-			  //  data += Map("values" -> Json.toJson(bookData.title))
-			    
+			   			    
 				Ok(Json.toJson(data))					 
 			}
 		)
@@ -53,6 +49,7 @@ object BookController extends BaseController {
 		val catForm = Form(
 			mapping(
 		        "title" 			-> text.verifying("Title is required", {!_.isEmpty}),
+		        "authors"			-> list(number),
 		        "price"  			-> bigDecimal,
 		        "languageId" 		-> text.verifying("Language is required", {!_.isEmpty}),
 		        "pageCount"			-> number.verifying(min(1)),
