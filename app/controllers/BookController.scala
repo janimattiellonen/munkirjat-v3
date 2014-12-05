@@ -17,6 +17,7 @@ import play.api.libs.json.Writes
 import scala.collection.Seq
 import validation.Constraints._
 import services.BookService
+import play.api.data.validation.Constraint
 
 object BookController extends BaseController {
 	def create = Action { implicit request =>
@@ -50,9 +51,9 @@ object BookController extends BaseController {
 			mapping(
 		        "title" 			-> text.verifying("Title is required", {!_.isEmpty}),
 		        "authors"			-> list(number),
-		        "price"  			-> bigDecimal,
+		        "price"  			-> bigDecimal.verifying("The price cannot be negative", {_ >= 0.0}),
 		        "languageId" 		-> text.verifying("Language is required", {!_.isEmpty}),
-		        "pageCount"			-> number.verifying(min(1)),
+		        "pageCount"			-> number.verifying("The book must have at least 1 page", {_ >= 1}),
 		        "isRead"			-> optional(boolean),
 		        "startedReading" 	-> optional(text),
 		        "finishedReading" 	-> optional(text),
@@ -62,7 +63,7 @@ object BookController extends BaseController {
 		
 		return catForm
 	}
-	
+
 	def getBookService(): BookService = {
 		val db = getDatabase()
 

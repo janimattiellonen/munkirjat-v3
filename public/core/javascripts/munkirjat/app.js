@@ -43,7 +43,8 @@ app.config(function ($translateProvider) {
 		formBookFinnish:	'Finnish',	
 		formBookSwedish:	'Swedish',	
 		formBookEnglish:	'English',	
-		formBookSave:		'Save'
+		formBookSave:		'Save',
+		"error.real":			'lus'
 	});
 	  
 	$translateProvider.preferredLanguage('en');
