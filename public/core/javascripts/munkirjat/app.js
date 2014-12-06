@@ -68,7 +68,12 @@ app.config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: '/templates/about'
             }).state('new-book', {
         		url: '/new-book',
-                templateUrl: '/templates/book-form'
+                templateUrl: '/templates/book-form',
+                controller: 'NewBookController'
+            }).state('edit-book', {
+        		url: '/book/:bookId',
+                templateUrl: '/templates/book-form',
+                controller: 'UpdateBookController'
             });
 }]);
 
@@ -91,7 +96,8 @@ app.factory('Books', ['$resource', function($resource) {
 	return $resource('/books/:bookId', 
 			{bookId: '@id'},
 			{
-				save: { method: 'POST', isArray: true}
+				save: { method: 'POST', isArray: true},
+				update: { method: 'PUT', params: {bookId: '@id'}, isArray: true}
 			}
 		);
 }]);

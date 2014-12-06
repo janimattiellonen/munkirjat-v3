@@ -5,8 +5,10 @@
 # Home page
 GET     /                           controllers.ApplicationController.index
 
-GET     /authors/search		controllers.AuthorController.searchAuthors(q:Option[String])
+GET     /authors/search				controllers.AuthorController.searchAuthors(q:Option[String])
+GET		/books/:bookId				controllers.BookController.get(bookId: Int)
 POST    /books						controllers.BookController.create
+PUT		/books/:bookId				controllers.BookController.update(bookId: Int)
 GET     /stats                      controllers.StatsController.stats
 GET     /stats/currently-reading    controllers.StatsController.currentlyReading
 GET     /stats/latest-read    		controllers.StatsController.latestRead

@@ -42,7 +42,7 @@ app.directive('latestAdded', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div class="box h_tallest"><h2 translate="latestAdded"></h2><ul><li ng-repeat="item in latestAdded"><a href="{{ item.id }}">{{ item.title }}<br/>{{formatDate(item.createdAt) }}</a></li></ul></div>',
+		template: '<div class="box h_tallest"><h2 translate="latestAdded"></h2><ul><li ng-repeat="item in latestAdded"><a href="{{ item.id }}">{{ item.title }}<br/>{{formatDate(item.created_at) }}</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.latestAdded({}, function(result) {
 				$scope.latestAdded = result;

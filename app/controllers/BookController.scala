@@ -46,14 +46,26 @@ object BookController extends BaseController {
 		)
 	}
 	
+	def update(bookId:Int) = Action {
+	    val data	 = new ListBuffer[Map[String, JsValue]]()
+	    
+		Ok(Json.toJson(data))
+	}
+	
+	def get(bookId:Int) = Action {
+	    val data	 = new ListBuffer[Map[String, JsValue]]()
+	    
+		Ok(Json.toJson(data))
+	}
+	
 	def createBookForm(): Form[Book] = {
 		val catForm = Form(
 			mapping(
 		        "title" 			-> text.verifying("Title is required", {!_.isEmpty}),
-		        "authors"			-> list(number),
+		        "authors" 			-> list(number).verifying("foo", e => e.size >= 1),
 		        "price"  			-> bigDecimal.verifying("The price cannot be negative", {_ >= 0.0}),
 		        "languageId" 		-> text.verifying("Language is required", {!_.isEmpty}),
-		        "pageCount"			-> number.verifying("The book must have at least 1 page", {_ >= 1}),
+		        "pageCount"			-> number.verifying("A book must have at least 1 page", {_ >= 1}),
 		        "isRead"			-> optional(boolean),
 		        "startedReading" 	-> optional(text),
 		        "finishedReading" 	-> optional(text),
