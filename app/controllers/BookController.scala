@@ -46,14 +46,66 @@ object BookController extends BaseController {
 		)
 	}
 	
-	def update(bookId:Int) = Action {
+	def update(bookId:Int) = Action { implicit request =>
 	    val data	 = new ListBuffer[Map[String, JsValue]]()
 	    
-		Ok(Json.toJson(data))
+		val bookForm = createBookForm()
+		
+        implicit val errorWrites = new Writes[FormError] {
+        	def writes(formError: FormError) = Json.obj(
+        		"key" -> formError.key,
+        		"message" -> formError.message
+        	)
+		}
+	    
+		bookForm.bindFromRequest.fold(
+			formWithErrors => {
+	            data += Map("errors" -> Json.toJson(formWithErrors.errors))
+		        	
+		        BadRequest(Json.toJson(data))	
+			},
+			bookData => {
+			    
+			    getBookService().updateBook(bookId, bookData)
+			   			    
+				Ok(Json.toJson(data))					 
+			}
+		)
 	}
 	
 	def get(bookId:Int) = Action {
-	    val data	 = new ListBuffer[Map[String, JsValue]]()
+	    val data						= new ListBuffer[Map[String, JsValue]]()
+	    val result:(Option[models.Tables.BookRow], List[(Int, String, String)])= getBookService().getBook(bookId)
+	    
+	    val book:models.Tables.BookRow = result._1.getOrElse(null)
+	    
+	    if (null != book) {
+	        
+	        val authors	= new ListBuffer[Map[String, JsValue]]()
+	        
+	        for (author <- result._2) {
+	            authors += Map(
+	            	"id" -> Json.toJson(author._1),
+	            	"firstname" -> Json.toJson(author._2),
+	            	"lastname" -> Json.toJson(author._3)
+	            )
+	            
+	        }
+	        
+	    	data += Map(
+	    		"id" 				-> Json.toJson(book.id),
+	    		"title"				-> Json.toJson(book.title),
+	    		"languageId"		-> Json.toJson(book.languageId),
+	    		"pageCount"			-> Json.toJson(book.pageCount),
+	    		"price"				-> Json.toJson(book.price),
+	    		"isRead"			-> Json.toJson(book.isRead),
+	    		"startedReading"	-> Json.toJson(book.startedReading),
+	    		"finishedReading"	-> Json.toJson(book.finishedReading),
+	    		"isbn"				-> Json.toJson(book.isbn),
+	    		"authors"			-> Json.toJson(authors)
+	    	)  
+	    }
+	    
 	    
 		Ok(Json.toJson(data))
 	}
@@ -74,11 +126,5 @@ object BookController extends BaseController {
 		)
 		
 		return catForm
-	}
-
-	def getBookService(): BookService = {
-		val db = getDatabase()
-
-		new BookService(TableQuery[BookTable], db)
 	}
 }

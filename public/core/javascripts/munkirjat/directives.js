@@ -2,7 +2,7 @@ app.directive('currentlyReading', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: 'true',
-		template: '<div class="box h_taller"><h2 translate="currentlyReading"></h2><ul><li ng-repeat="item in currentlyReadBooks"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} ({{ daysRead(item.started_reading) }} days)</a></li></ul></div>',
+		template: '<div class="box h_taller"><h2 translate="currentlyReading"></h2><ul><li ng-repeat="item in currentlyReadBooks"><a href="#/book/{{ item.id }}">{{ item.title }}<br/>{{formatDate(item.started_reading) }} ({{ daysRead(item.started_reading) }} days)</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.currentlyReading({}, function(result) {
 				$scope.currentlyReadBooks = result;
@@ -25,7 +25,7 @@ app.directive('latestRead', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div class="box h_taller"><h2 translate="latestRead"></h2><ul><li ng-repeat="item in latestReadBook"><a href="">{{ item.title }}<br/>{{formatDate(item.started_reading) }} - {{formatDate(item.finished_reading) }} ({{ daysRead(item.started_reading, item.finished_reading) }} days)</a></li></ul></div>',
+		template: '<div class="box h_taller"><h2 translate="latestRead"></h2><ul><li ng-repeat="item in latestReadBook"><a href="#/book/{{ item.id }}">{{ item.title }}<br/>{{formatDate(item.started_reading) }} - {{formatDate(item.finished_reading) }} ({{ daysRead(item.started_reading, item.finished_reading) }} days)</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.latestRead({}, function(result) {
 				$scope.latestReadBook = result;
@@ -42,7 +42,7 @@ app.directive('latestAdded', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div class="box h_tallest"><h2 translate="latestAdded"></h2><ul><li ng-repeat="item in latestAdded"><a href="{{ item.id }}">{{ item.title }}<br/>{{formatDate(item.created_at) }}</a></li></ul></div>',
+		template: '<div class="box h_tallest"><h2 translate="latestAdded"></h2><ul><li ng-repeat="item in latestAdded"><a href="#/book/{{ item.id }}">{{ item.title }}<br/>{{formatDate(item.created_at) }}</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.latestAdded({}, function(result) {
 				$scope.latestAdded = result;
@@ -55,7 +55,7 @@ app.directive('favouriteAuthors', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div class="box h_tallest"><h2 translate="favouriteAuthors"></h2><ul><li ng-repeat="item in favouriteAuthors"><a href="{{ item.id }}">{{ item.firstname }} {{ item.lastname}} ({{ item.amount }})</a></li></ul></div>',
+		template: '<div class="box h_tallest"><h2 translate="favouriteAuthors"></h2><ul><li ng-repeat="item in favouriteAuthors"><a href="#/book/{{ item.id }}">{{ item.firstname }} {{ item.lastname}} ({{ item.amount }})</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.favouriteAuthors({}, function(result) {
 				$scope.favouriteAuthors = result;
@@ -68,7 +68,7 @@ app.directive('recentlyRead', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div class="box h_tallest"><h2 translate="recentlyRead"></h2><ul><li ng-repeat="item in recentlyReadBooks"><a href="{{ item.id }}">{{ item.title }}</a></li></ul></div>',
+		template: '<div class="box h_tallest"><h2 translate="recentlyRead"></h2><ul><li ng-repeat="item in recentlyReadBooks"><a href="#/book/{{ item.id }}">{{ item.title }}</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.recentlyRead({}, function(result) {
 				$scope.recentlyReadBooks = result;
@@ -81,7 +81,7 @@ app.directive('unread', ['$compile', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
-		template: '<div class="box h_tallest"><h2 translate="unread"></h2><ul><li ng-repeat="item in unreadBooks"><a href="{{ item.id }}">{{ item.title }}</a></li></ul></div>',
+		template: '<div class="box h_tallest"><h2 translate="unread"></h2><ul><li ng-repeat="item in unreadBooks"><a href="#/book/{{ item.id }}">{{ item.title }}</a></li></ul></div>',
 		controller: function($scope, $element, $attrs, $location, Stats) {
 			Stats.unread({}, function(result) {
 				$scope.unreadBooks = result;
@@ -160,6 +160,14 @@ app.directive('authorSelector', ['$compile', function($compile) {
 
 	                formatResult: function(author) {
 	                	return author.firstname + " " + author.lastname;
+	                },
+	                
+	                initSelection : function (element, callback) {
+	                    var data = [];
+	                    $(element.val().split(",")).each(function () {
+	                       // data.push("lus");
+	                    });
+	                    //callback({firstname: "f", lastname: "ss"});
 	                }
 				});
 			});

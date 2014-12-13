@@ -97,7 +97,7 @@ app.factory('Books', ['$resource', function($resource) {
 			{bookId: '@id'},
 			{
 				save: { method: 'POST', isArray: true},
-				update: { method: 'PUT', params: {bookId: '@id'}, isArray: true}
+				update: { method: 'PUT', params: {bookId: '@id'}, isArray: true},
 			}
 		);
 }]);

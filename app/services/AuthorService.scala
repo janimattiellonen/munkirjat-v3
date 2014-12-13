@@ -16,4 +16,10 @@ class AuthorService(val authors:TableQuery[AuthorTable], val bookAuthors:TableQu
 			query.run
         }
 	}
+	
+	def getAuthor(authorId:Int):Option[models.Tables.AuthorRow] = {
+	    db.withSession { implicit session => 
+	        authors.filter{ _.id === authorId }.firstOption
+	    }
+	}
 }

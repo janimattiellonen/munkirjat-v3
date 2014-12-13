@@ -4,7 +4,6 @@ import scala.slick.driver.MySQLDriver.simple._
 import play.api._
 import play.api.mvc._
 import models.Tables._
-import models.Tables._
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
 import scala.math.ScalaNumber
@@ -26,11 +25,5 @@ object AuthorController extends BaseController {
 	    }
 
 	    Ok(Json.toJson(data))
-	}
-	
-	def getAuthorService(): AuthorService = {
-		val db = getDatabase()
-
-		new AuthorService(TableQuery[Author], TableQuery[BookAuthor], db)
 	}
 }
