@@ -5,7 +5,10 @@
 # Home page
 GET     /                           controllers.ApplicationController.index
 
+POST    /authors					controllers.AuthorController.create
 GET     /authors/search				controllers.AuthorController.searchAuthors(q:Option[String])
+GET		/authors/:authorId			controllers.AuthorController.get(authorId: Int)
+PUT    	/authors/:authorId			controllers.AuthorController.update(authorId: Int)
 GET		/books/:bookId				controllers.BookController.get(bookId: Int)
 POST    /books						controllers.BookController.create
 PUT		/books/:bookId				controllers.BookController.update(bookId: Int)
@@ -22,7 +25,9 @@ GET     /stats/unread				controllers.StatsController.getUnread
 
 GET		/templates/home				controllers.ApplicationController.homeTemplate
 GET		/templates/about			controllers.ApplicationController.aboutTemplate
-GET		/templates/book-form		controllers.ApplicationController.bookFormTemplate
+GET		/templates/login			controllers.ApplicationController.loginTemplate
+GET 	/templates/author-form		controllers.AuthorController.authorFormTemplate
+GET		/templates/book-form		controllers.BookController.bookFormTemplate
 
 
 

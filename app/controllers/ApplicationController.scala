@@ -49,8 +49,7 @@ object ApplicationController extends Controller {
 	    Ok(views.html.about(""))
 	}
 	
-	def bookFormTemplate = Action {
-	    Ok(views.html.bookform(""))
+	def loginTemplate = Action {
+	    Ok(views.html.loginform(""))
 	}
-
 }

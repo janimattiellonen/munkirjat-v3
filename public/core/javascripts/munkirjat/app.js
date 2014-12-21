@@ -29,6 +29,9 @@ app.config(function ($translateProvider) {
 		favouriteAuthors:	'Favourite authors',
 		recentlyRead:		'Recently read books',
 		unread:				'Unread books',
+		formAuthorFirstname:	'Firstname',
+		formAuthorLastname:		'Lastname',
+		formAuthorSave:		'Save',
 		formBookTitle:		'Title',
 		formBookPageCount:	'Page count',
 		formBookAuthors:	'Authors',
@@ -44,7 +47,9 @@ app.config(function ($translateProvider) {
 		formBookSwedish:	'Swedish',	
 		formBookEnglish:	'English',	
 		formBookSave:		'Save',
-		"error.real":			'lus'
+		formLoginUsername:	'Username',
+		formLoginPassword:	'Password',
+		formLoginLogin:		'Login'
 	});
 	  
 	$translateProvider.preferredLanguage('en');
@@ -66,14 +71,25 @@ app.config(['$stateProvider', '$urlRouterProvider',
 	        }).state('about', {
         		url: '/about',
                 templateUrl: '/templates/about'
+            }).state('login', {
+        		url: '/login',
+                templateUrl: '/templates/login'
+            }).state('new-author', {
+        		url: '/new-author',
+                templateUrl: '/templates/author-form',
+                controller: 'AuthorController'
+            }).state('edit-author', {
+        		url: '/author/:authorId',
+                templateUrl: '/templates/author-form',
+                controller: 'AuthorController'
             }).state('new-book', {
         		url: '/new-book',
                 templateUrl: '/templates/book-form',
-                controller: 'NewBookController'
+                controller: 'BookController'
             }).state('edit-book', {
         		url: '/book/:bookId',
                 templateUrl: '/templates/book-form',
-                controller: 'UpdateBookController'
+                controller: 'BookController'
             });
 }]);
 
@@ -90,6 +106,16 @@ app.factory('Stats', ['$resource', function($resource) {
     		unread: { method: 'GET', url: '/stats/unread', isArray: true}
     	}
     );
+}]);
+
+app.factory('Authors', ['$resource', function($resource) {
+	return $resource('/authors/:authorId', 
+			{authorId: '@id'},
+			{
+				save: { method: 'POST', isArray: true},
+				update: { method: 'PUT', params: {authorId: '@id'}, isArray: true},
+			}
+		);
 }]);
 
 app.factory('Books', ['$resource', function($resource) {

@@ -1,8 +1,9 @@
-app.controller('UpdateBookController', ['$rootScope', '$scope', '$stateParams', '$state', 'Books',
-    function UpdateBookController($rootScope, $scope, $stateParams, $state, Books) {
+app.controller('BookController', ['$rootScope', '$scope', '$stateParams', '$state', 'Books',
+    function BookController($rootScope, $scope, $stateParams, $state, Books) {
 		var errorizer = new Munkirjat.Errorizer($('#book-creation'), 'form-group', [{key: 'authors[0]', alias: 'authors'}, {key: 'languageId', alias: 'language'}]);
 		
         $scope.book = {
+        	id:					undefined !== $stateParams.bookId ? $stateParams.bookId : null,
         	title: 				'',
         	languageId:			'',
         	pageCount:			'',
@@ -12,15 +13,17 @@ app.controller('UpdateBookController', ['$rootScope', '$scope', '$stateParams', 
         	finishedReading:	'',
         	isbn:				'',
         	authors:			[],
-        	id: 				$stateParams.bookId
         };
-
+        
         $scope.saveBook = function() {
+        	
         	$scope.book.authors = $scope.getSelectedAuthors();
            	alert(JSON.stringify($scope.book));
 
-        	Books.update($scope.book, function(result) {
-        		alert("OK: " + JSON.stringify(result));
+           	var method = null !== $scope.book.id ? Books.update : Books.save;
+           	
+           	method($scope.book, function(result) {
+           		$scope.book.id = result[0].id;
         	}, function(result) {
         		errorizer.errorize(result.data[0].errors);
         	});
@@ -28,7 +31,7 @@ app.controller('UpdateBookController', ['$rootScope', '$scope', '$stateParams', 
         
         $scope.getSelectedAuthors = function() {
         	return $('#authors').val().split(',');
-        };
+        }
         
         $scope.setSelectedAuthors = function(authors) {
 			var selectedAuthors = [];
@@ -65,5 +68,7 @@ app.controller('UpdateBookController', ['$rootScope', '$scope', '$stateParams', 
         	});
         }
         
-        $scope.loadBookDetails($stateParams.bookId);
+        if(undefined !== $stateParams.bookId) {
+        	$scope.loadBookDetails($stateParams.bookId);        
+        }
     }]);

@@ -39,8 +39,10 @@ object BookController extends BaseController {
 			},
 			bookData => {
 			    
-			    getBookService().createBook(bookData)
-			   			    
+			    data += Map(
+			    	"id" -> Json.toJson(getBookService().createBook(bookData))
+			    )
+	    
 				Ok(Json.toJson(data))					 
 			}
 		)
@@ -111,7 +113,7 @@ object BookController extends BaseController {
 	}
 	
 	def createBookForm(): Form[Book] = {
-		val catForm = Form(
+		val bookForm = Form(
 			mapping(
 		        "title" 			-> text.verifying("Title is required", {!_.isEmpty}),
 		        "authors" 			-> list(number).verifying("foo", e => e.size >= 1),
@@ -125,6 +127,10 @@ object BookController extends BaseController {
 		    )(Book.apply)(Book.unapply)
 		)
 		
-		return catForm
+		return bookForm
+	}
+	
+	def bookFormTemplate = Action {
+	    Ok(views.html.bookform(""))
 	}
 }
