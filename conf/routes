@@ -3,7 +3,14 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.ApplicationController.index
+GET     /                                @controllers.ApplicationController.index
+GET     /signIn                          @controllers.ApplicationController.signIn
+GET     /signUp                          @controllers.ApplicationController.signUp
+GET     /signOut                         @controllers.ApplicationController.signOut
+GET     /authenticate/:provider          @controllers.SocialAuthController.authenticate(provider)
+POST    /authenticate/credentials        @controllers.CredentialsAuthController.authenticate
+POST    /signUp                          @controllers.SignUpController.signUp
+
 
 POST    /authors					controllers.AuthorController.create
 GET     /authors/search				controllers.AuthorController.searchAuthors(q:Option[String])
@@ -23,9 +30,9 @@ GET     /stats/unread				controllers.StatsController.getUnread
 
 # AngularJS templates
 
-GET		/templates/home				controllers.ApplicationController.homeTemplate
-GET		/templates/about			controllers.ApplicationController.aboutTemplate
-GET		/templates/login			controllers.ApplicationController.loginTemplate
+GET		/templates/home				@controllers.ApplicationController.homeTemplate
+GET		/templates/about			@controllers.ApplicationController.aboutTemplate
+GET		/templates/login			@controllers.ApplicationController.loginTemplate
 GET 	/templates/author-form		controllers.AuthorController.authorFormTemplate
 GET		/templates/book-form		controllers.BookController.bookFormTemplate
 
@@ -33,3 +40,7 @@ GET		/templates/book-form		controllers.BookController.bookFormTemplate
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /webjars/*file              controllers.WebJarAssets.at(file)
+
+
+

@@ -11,6 +11,9 @@ import scala.math.ScalaNumber
 import scala.collection.mutable.ListBuffer
 
 object StatsController extends BaseController {
+
+	import play.api.Play.current
+
 	def stats = Action {
 		
 		val data = new ListBuffer[Map[String, JsValue]]()
@@ -128,6 +131,6 @@ object StatsController extends BaseController {
 	def getStatsService(): StatsService = {
 		val db = getDatabase()
 
-		new StatsService(TableQuery[Book], TableQuery[Author], TableQuery[Person], TableQuery[Task], TableQuery[Job], TableQuery[BookAuthor], db)
+		new StatsService(TableQuery[Book], TableQuery[Author], TableQuery[BookAuthor], db)
 	}
 }

@@ -10,7 +10,7 @@ import scala.math.ScalaNumber
 import scala.slick.lifted.Query
 import scala.slick.lifted.Column
 
-class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author], val persons: TableQuery[Person], val tasks: TableQuery[Task], val jobs:TableQuery[Job], val bookAuthors: TableQuery[BookAuthor], db: Database) {
+class StatsService(val books: TableQuery[Book], val authors: TableQuery[Author], val bookAuthors: TableQuery[BookAuthor], db: Database) {
 	    
     def getAuthorCount(): Int = {
         db.withSession { implicit session =>            

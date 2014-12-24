@@ -14,7 +14,7 @@ trait Tables {
   import scala.slick.jdbc.{GetResult => GR}
   
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = Author.ddl ++ Book.ddl ++ BookAuthor.ddl ++ Genre.ddl ++ Job.ddl ++ Person.ddl ++ PlayEvolutions.ddl ++ Task.ddl ++ User.ddl ++ XiTag.ddl ++ XiTagging.ddl
+  lazy val ddl = Author.ddl ++ Book.ddl ++ BookAuthor.ddl ++ Genre.ddl ++ PlayEvolutions.ddl ++ XiTag.ddl ++ XiTagging.ddl
   
   /** Entity class storing rows of table Author
    *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
@@ -148,64 +148,7 @@ trait Tables {
   }
   /** Collection-like TableQuery object for table Genre */
   lazy val Genre = new TableQuery(tag => new Genre(tag))
-  
-  /** Entity class storing rows of table Job
-   *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
-   *  @param taskId Database column task_id DBType(INT)
-   *  @param `type` Database column type DBType(VARCHAR), Length(10,true), Default(None) */
-  case class JobRow(id: Int, taskId: Int, `type`: Option[String] = None)
-  /** GetResult implicit for fetching JobRow objects using plain SQL queries */
-  implicit def GetResultJobRow(implicit e0: GR[Int], e1: GR[Option[String]]): GR[JobRow] = GR{
-    prs => import prs._
-    JobRow.tupled((<<[Int], <<[Int], <<?[String]))
-  }
-  /** Table description of table job. Objects of this class serve as prototypes for rows in queries.
-   *  NOTE: The following names collided with Scala keywords and were escaped: type */
-  class Job(_tableTag: Tag) extends Table[JobRow](_tableTag, "job") {
-    def * = (id, taskId, `type`) <> (JobRow.tupled, JobRow.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, taskId.?, `type`).shaped.<>({r=>import r._; _1.map(_=> JobRow.tupled((_1.get, _2.get, _3)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-    
-    /** Database column id DBType(INT), AutoInc, PrimaryKey */
-    val id: Column[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column task_id DBType(INT) */
-    val taskId: Column[Int] = column[Int]("task_id")
-    /** Database column type DBType(VARCHAR), Length(10,true), Default(None)
-     *  NOTE: The name was escaped because it collided with a Scala keyword. */
-    val `type`: Column[Option[String]] = column[Option[String]]("type", O.Length(10,varying=true), O.Default(None))
-    
-    /** Foreign key referencing Task (database name job_ibfk_1) */
-    lazy val taskFk = foreignKey("job_ibfk_1", taskId, Task)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-  }
-  /** Collection-like TableQuery object for table Job */
-  lazy val Job = new TableQuery(tag => new Job(tag))
-  
-  /** Entity class storing rows of table Person
-   *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
-   *  @param name Database column name DBType(VARCHAR), Length(128,true), Default(None) */
-  case class PersonRow(id: Int, name: Option[String] = None)
-  /** GetResult implicit for fetching PersonRow objects using plain SQL queries */
-  implicit def GetResultPersonRow(implicit e0: GR[Int], e1: GR[Option[String]]): GR[PersonRow] = GR{
-    prs => import prs._
-    PersonRow.tupled((<<[Int], <<?[String]))
-  }
-  /** Table description of table person. Objects of this class serve as prototypes for rows in queries. */
-  class Person(_tableTag: Tag) extends Table[PersonRow](_tableTag, "person") {
-    def * = (id, name) <> (PersonRow.tupled, PersonRow.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, name).shaped.<>({r=>import r._; _1.map(_=> PersonRow.tupled((_1.get, _2)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-    
-    /** Database column id DBType(INT), AutoInc, PrimaryKey */
-    val id: Column[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column name DBType(VARCHAR), Length(128,true), Default(None) */
-    val name: Column[Option[String]] = column[Option[String]]("name", O.Length(128,varying=true), O.Default(None))
-    
-    /** Index over (name) (database name name) */
-    val index1 = index("name", name)
-  }
-  /** Collection-like TableQuery object for table Person */
-  lazy val Person = new TableQuery(tag => new Person(tag))
-  
+
   /** Entity class storing rows of table PlayEvolutions
    *  @param id Database column id DBType(INT), PrimaryKey
    *  @param hash Database column hash DBType(VARCHAR), Length(255,true)
@@ -243,108 +186,6 @@ trait Tables {
   }
   /** Collection-like TableQuery object for table PlayEvolutions */
   lazy val PlayEvolutions = new TableQuery(tag => new PlayEvolutions(tag))
-  
-  /** Entity class storing rows of table Task
-   *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
-   *  @param prio Database column prio DBType(INT), Default(None)
-   *  @param personId Database column person_id DBType(INT) */
-  case class TaskRow(id: Int, prio: Option[Int] = None, personId: Int)
-  /** GetResult implicit for fetching TaskRow objects using plain SQL queries */
-  implicit def GetResultTaskRow(implicit e0: GR[Int], e1: GR[Option[Int]]): GR[TaskRow] = GR{
-    prs => import prs._
-    TaskRow.tupled((<<[Int], <<?[Int], <<[Int]))
-  }
-  /** Table description of table task. Objects of this class serve as prototypes for rows in queries. */
-  class Task(_tableTag: Tag) extends Table[TaskRow](_tableTag, "task") {
-    def * = (id, prio, personId) <> (TaskRow.tupled, TaskRow.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, prio, personId.?).shaped.<>({r=>import r._; _1.map(_=> TaskRow.tupled((_1.get, _2, _3.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-    
-    /** Database column id DBType(INT), AutoInc, PrimaryKey */
-    val id: Column[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column prio DBType(INT), Default(None) */
-    val prio: Column[Option[Int]] = column[Option[Int]]("prio", O.Default(None))
-    /** Database column person_id DBType(INT) */
-    val personId: Column[Int] = column[Int]("person_id")
-    
-    /** Foreign key referencing Person (database name task_ibfk_1) */
-    lazy val personFk = foreignKey("task_ibfk_1", personId, Person)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-  }
-  /** Collection-like TableQuery object for table Task */
-  lazy val Task = new TableQuery(tag => new Task(tag))
-  
-  /** Entity class storing rows of table User
-   *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
-   *  @param username Database column username DBType(VARCHAR), Length(255,true)
-   *  @param usernameCanonical Database column username_canonical DBType(VARCHAR), Length(255,true)
-   *  @param email Database column email DBType(VARCHAR), Length(255,true)
-   *  @param emailCanonical Database column email_canonical DBType(VARCHAR), Length(255,true)
-   *  @param enabled Database column enabled DBType(BIT)
-   *  @param salt Database column salt DBType(VARCHAR), Length(255,true)
-   *  @param password Database column password DBType(VARCHAR), Length(255,true)
-   *  @param lastLogin Database column last_login DBType(DATETIME), Default(None)
-   *  @param locked Database column locked DBType(BIT)
-   *  @param expired Database column expired DBType(BIT)
-   *  @param expiresAt Database column expires_at DBType(DATETIME), Default(None)
-   *  @param confirmationToken Database column confirmation_token DBType(VARCHAR), Length(255,true), Default(None)
-   *  @param passwordRequestedAt Database column password_requested_at DBType(DATETIME), Default(None)
-   *  @param roles Database column roles DBType(LONGTEXT), Length(2147483647,true)
-   *  @param credentialsExpired Database column credentials_expired DBType(BIT)
-   *  @param credentialsExpireAt Database column credentials_expire_at DBType(DATETIME), Default(None) */
-  case class UserRow(id: Int, username: String, usernameCanonical: String, email: String, emailCanonical: String, enabled: Boolean, salt: String, password: String, lastLogin: Option[java.sql.Timestamp] = None, locked: Boolean, expired: Boolean, expiresAt: Option[java.sql.Timestamp] = None, confirmationToken: Option[String] = None, passwordRequestedAt: Option[java.sql.Timestamp] = None, roles: String, credentialsExpired: Boolean, credentialsExpireAt: Option[java.sql.Timestamp] = None)
-  /** GetResult implicit for fetching UserRow objects using plain SQL queries */
-  implicit def GetResultUserRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Boolean], e3: GR[Option[java.sql.Timestamp]], e4: GR[Option[String]]): GR[UserRow] = GR{
-    prs => import prs._
-    UserRow.tupled((<<[Int], <<[String], <<[String], <<[String], <<[String], <<[Boolean], <<[String], <<[String], <<?[java.sql.Timestamp], <<[Boolean], <<[Boolean], <<?[java.sql.Timestamp], <<?[String], <<?[java.sql.Timestamp], <<[String], <<[Boolean], <<?[java.sql.Timestamp]))
-  }
-  /** Table description of table user. Objects of this class serve as prototypes for rows in queries. */
-  class User(_tableTag: Tag) extends Table[UserRow](_tableTag, "user") {
-    def * = (id, username, usernameCanonical, email, emailCanonical, enabled, salt, password, lastLogin, locked, expired, expiresAt, confirmationToken, passwordRequestedAt, roles, credentialsExpired, credentialsExpireAt) <> (UserRow.tupled, UserRow.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, username.?, usernameCanonical.?, email.?, emailCanonical.?, enabled.?, salt.?, password.?, lastLogin, locked.?, expired.?, expiresAt, confirmationToken, passwordRequestedAt, roles.?, credentialsExpired.?, credentialsExpireAt).shaped.<>({r=>import r._; _1.map(_=> UserRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7.get, _8.get, _9, _10.get, _11.get, _12, _13, _14, _15.get, _16.get, _17)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-    
-    /** Database column id DBType(INT), AutoInc, PrimaryKey */
-    val id: Column[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column username DBType(VARCHAR), Length(255,true) */
-    val username: Column[String] = column[String]("username", O.Length(255,varying=true))
-    /** Database column username_canonical DBType(VARCHAR), Length(255,true) */
-    val usernameCanonical: Column[String] = column[String]("username_canonical", O.Length(255,varying=true))
-    /** Database column email DBType(VARCHAR), Length(255,true) */
-    val email: Column[String] = column[String]("email", O.Length(255,varying=true))
-    /** Database column email_canonical DBType(VARCHAR), Length(255,true) */
-    val emailCanonical: Column[String] = column[String]("email_canonical", O.Length(255,varying=true))
-    /** Database column enabled DBType(BIT) */
-    val enabled: Column[Boolean] = column[Boolean]("enabled")
-    /** Database column salt DBType(VARCHAR), Length(255,true) */
-    val salt: Column[String] = column[String]("salt", O.Length(255,varying=true))
-    /** Database column password DBType(VARCHAR), Length(255,true) */
-    val password: Column[String] = column[String]("password", O.Length(255,varying=true))
-    /** Database column last_login DBType(DATETIME), Default(None) */
-    val lastLogin: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("last_login", O.Default(None))
-    /** Database column locked DBType(BIT) */
-    val locked: Column[Boolean] = column[Boolean]("locked")
-    /** Database column expired DBType(BIT) */
-    val expired: Column[Boolean] = column[Boolean]("expired")
-    /** Database column expires_at DBType(DATETIME), Default(None) */
-    val expiresAt: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("expires_at", O.Default(None))
-    /** Database column confirmation_token DBType(VARCHAR), Length(255,true), Default(None) */
-    val confirmationToken: Column[Option[String]] = column[Option[String]]("confirmation_token", O.Length(255,varying=true), O.Default(None))
-    /** Database column password_requested_at DBType(DATETIME), Default(None) */
-    val passwordRequestedAt: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("password_requested_at", O.Default(None))
-    /** Database column roles DBType(LONGTEXT), Length(2147483647,true) */
-    val roles: Column[String] = column[String]("roles", O.Length(2147483647,varying=true))
-    /** Database column credentials_expired DBType(BIT) */
-    val credentialsExpired: Column[Boolean] = column[Boolean]("credentials_expired")
-    /** Database column credentials_expire_at DBType(DATETIME), Default(None) */
-    val credentialsExpireAt: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("credentials_expire_at", O.Default(None))
-    
-    /** Uniqueness Index over (usernameCanonical) (database name UNIQ_957A647992FC23A8) */
-    val index1 = index("UNIQ_957A647992FC23A8", usernameCanonical, unique=true)
-    /** Uniqueness Index over (emailCanonical) (database name UNIQ_957A6479A0D96FBF) */
-    val index2 = index("UNIQ_957A6479A0D96FBF", emailCanonical, unique=true)
-  }
-  /** Collection-like TableQuery object for table User */
-  lazy val User = new TableQuery(tag => new User(tag))
   
   /** Entity class storing rows of table XiTag
    *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
